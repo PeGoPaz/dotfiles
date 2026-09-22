@@ -2,18 +2,14 @@
 --## MONITORS ###
 --###############
 
+-- ASUS TUF A14 (FA401GM) internal panel. No external outputs.
+-- Scale 1.6 keeps the logical size whole: 2560/1.6 = 1600, 1600/1.6 = 1000.
+-- UNVERIFIED: confirm the mode is accepted with `hyprctl monitors`.
 hl.monitor({
     output = "eDP-1",
-    mode = "1920x1080@60",
+    mode = "2560x1600@165",
     position = "auto",
-    scale = "1.2",
-})
-
-hl.monitor({
-    output = "HDMI-A-1",
-    mode = "1360x768@60.02Hz",
-    position = "auto",
-    scale = "1",
+    scale = "1.6",
 })
 
 --##################
@@ -31,6 +27,15 @@ local browser = "brave-origin"
 
 hl.env("XCURSOR_SIZE", "24")
 hl.env("HYPRCURSOR_SIZE", "24")
+
+-- Hybrid GPU: Radeon 890M (iGPU) + RTX 5060 (dGPU), modes switched with
+-- supergfxctl. Deliberately NOT setting AQ_DRM_DEVICES / WLR_DRM_DEVICES:
+-- pinning the compositor to the nvidia node means the session refuses to
+-- start once supergfxctl is switched to Integrated. LIBVA_DRIVER_NAME is
+-- left unset for the same reason - a fixed value breaks on mode switch,
+-- libva picks the driver per device on its own.
+hl.env("NVD_BACKEND", "direct")
+hl.env("ELECTRON_OZONE_PLATFORM_HINT", "auto")
 
 --####################
 --## LOOK AND FEEL ###
@@ -283,7 +288,7 @@ hl.bind("switch:on:Lid Switch",
 
 -- When opening lid -> Turn screen back on
 hl.bind("switch:off:Lid Switch",
-    hl.dsp.exec_cmd('hyprctl dispatch dpms on && hyprctl keyword monitor "eDP-1, 1920x1080@60, auto, 1.2"'),
+    hl.dsp.exec_cmd('hyprctl dispatch dpms on && hyprctl keyword monitor "eDP-1, 2560x1600@165, auto, 1.6"'),
     { locked = true })
 
 --#############################
