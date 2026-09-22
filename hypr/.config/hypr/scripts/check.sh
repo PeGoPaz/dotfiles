@@ -67,6 +67,10 @@ opt "input:touchpad:disable_while_typing" 1
 opt "general:allow_tearing"              1
 opt "general:border_size"                1
 opt "decoration:rounding"                0
+# Both of these CachyOS sets in its own config; ours replaces that config, so
+# they are worth confirming rather than assuming.
+opt "misc:vrr"                           2
+opt "render:direct_scanout"              2
 
 layout=$(hyprctl getoption input:kb_layout 2>/dev/null | awk '/^str/{print $2; exit}')
 [ "$layout" = "us,ru" ] \
