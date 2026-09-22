@@ -148,9 +148,11 @@ else
     fail "supergfxctl not installed"
 fi
 if need asusctl; then
-    out=$(asusctl profile -p 2>/dev/null) \
-        && pass "asusctl profile -p -> $out" \
-        || fail "asusctl profile -p failed - is asusd running?"
+    # asusctl 6.5 prints four lines here; only the first names the active profile.
+    out=$(asusctl profile get 2>/dev/null | awk '/^Active profile/{print $NF}')
+    [ -n "$out" ] \
+        && pass "asusctl profile get -> $out" \
+        || fail "asusctl profile get returned nothing - is asusd running?"
 else
     fail "asusctl not installed"
 fi

@@ -118,7 +118,7 @@ are the remainder, and `check.sh` tests all of them:
 |---|---|---|
 | `2560x1600@165` is accepted on `eDP-1` | `hyprctl monitors` | Edit the monitor block |
 | Keyboard backlight device `asus::kbd_backlight` | `brightnessctl -l` | One line in `hypridle.conf` |
-| Output shape of `supergfxctl -g` and `asusctl profile -p` | Run them by hand | Waybar module shows empty |
+| Output shape of `supergfxctl -g` and `asusctl profile get` | Run them by hand | Waybar module shows empty |
 | `immediate` tears cleanly on NVIDIA | Launch something from Steam | Drop the `immediate` rule |
 | The lid switch is named `Lid Switch` | `hyprctl devices` | Rename it in the two `switch:` binds |
 

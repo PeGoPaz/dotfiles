@@ -59,10 +59,10 @@
         "tooltip": false
     },
     "custom/profile": {
-        "exec": "asusctl profile -p 2>/dev/null | awk '{print $NF}'",
+        "exec": "asusctl profile get 2>/dev/null | awk '/^Active profile/{print $NF}'",
         "interval": 30,
         "format": "󰓅 {}",
-        "on-click": "asusctl profile -n",
+        "on-click": "asusctl profile next",
         "tooltip": false
     },
     "bluetooth": {
