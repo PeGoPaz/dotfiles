@@ -85,18 +85,25 @@ tail -60 ~/.local/share/hyprland/hyprland.log
 
 ## Assumptions that only the hardware can confirm
 
-None of these could be tested before the laptop existed. Each is also marked with an
-`UNVERIFIED` comment at the place it appears in the config.
+Every config in this repo has been checked key by key against the source of the
+version the repositories actually ship - Hyprland 0.56.2, hyprlock 0.9.6, hypridle
+0.1.8, hyprpaper 0.8.4, hyprsunset 0.4.0, Waybar 0.15.0, mako 1.11, fuzzel 1.15.
+Ghostty's config is validated by `ghostty +validate-config`, and the Neovim setup
+was installed and started for real.
+
+What that checking cannot settle is anything that depends on the machine. These four
+are the remainder, and `check.sh` tests all of them:
 
 | Assumption | How to check | If it is wrong |
 |---|---|---|
-| Lua API field names (`hl.monitor`, `touchpad`, `window_rule`) | Hyprland log on first start | Session will not start - roll back as above |
 | `2560x1600@165` is accepted on `eDP-1` | `hyprctl monitors` | Edit the monitor block |
-| Touchpad keys `tap_to_click` / `disable_while_typing` | Hyprland log | Highest-risk guess in the file; hyprlang spells one of them with hyphens |
 | Keyboard backlight device `asus::kbd_backlight` | `brightnessctl -l` | One line in `hypridle.conf` |
-| `hyprsunset.conf` profile blocks | `hyprctl hyprsunset temperature` | Needs a recent hyprsunset; the rest still works |
-| Output of `supergfxctl -g` and `asusctl profile -p` | Run them by hand | Waybar module shows empty |
+| Output shape of `supergfxctl -g` and `asusctl profile -p` | Run them by hand | Waybar module shows empty |
 | `immediate` tears cleanly on NVIDIA | Launch something from Steam | Drop the `immediate` rule |
+
+Checking names is not the same as proving the whole config loads. It caught two real
+breakages that were inherited from upstream - hyprpaper's config format and three
+hyprlock keys that no longer exist - but only a first boot proves the rest.
 
 ## First boot checklist
 

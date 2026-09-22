@@ -165,10 +165,9 @@ hl.config({
         kb_rules   = "",
         follow_mouse = 1,
         sensitivity  = 0, -- -1.0 - 1.0, 0 means no modification.
-        -- UNVERIFIED: these three key names are the highest-risk guess in this
-        -- file. hyprlang spells the middle one tap-to-click, which is not a
-        -- valid Lua identifier, so the underscore form is the assumption. If
-        -- Hyprland refuses to start, check the log for this block first.
+        -- hyprlang spells the middle one tap-to-click; Hyprland's Lua layer
+        -- maps '-' to '_' (luaConfigValueName in src/config/lua/ConfigManager.cpp),
+        -- so the underscore form below is correct.
         touchpad = {
             natural_scroll       = true,
             tap_to_click         = true,
@@ -314,8 +313,9 @@ hl.window_rule({
 -- Games. idle_inhibit keeps the screen from blanking mid-session, immediate
 -- lets frames tear for latency (needs general.allow_tearing, set above), and
 -- fullscreen skips the windowed first frame.
--- UNVERIFIED: field names are the snake_case of the hyprlang rules, matching
--- no_focus / suppress_event below. Confirm against `hyprctl clients` classes.
+-- Property names checked against WindowRuleEffectContainer.cpp; "always" is one
+-- of the values WindowRule.cpp accepts. The class regex still wants confirming
+-- against `hyprctl clients` once a game is installed.
 hl.window_rule({
     name = "steam-games",
     match = {
