@@ -268,11 +268,12 @@ hl.bind("XF86AudioPause",             hl.dsp.exec_cmd("playerctl play-pause"),  
 hl.bind("XF86AudioPlay",              hl.dsp.exec_cmd("playerctl play-pause"),  { locked = true })
 hl.bind("XF86AudioPrev",              hl.dsp.exec_cmd("playerctl previous"),     { locked = true })
 
--- Lid switch handling
--- If plugged in (systemd-ac-power returns 0/true) -> Turn screen off
--- If on battery  (systemd-ac-power returns 1/false) -> Suspend
+-- Lid switch handling. Locks first either way - on AC the screen would
+-- otherwise just go black and reopen straight onto the desktop.
+-- If plugged in (systemd-ac-power returns 0/true) -> lock, screen off
+-- If on battery  (systemd-ac-power returns 1/false) -> lock, suspend
 hl.bind("switch:on:Lid Switch",
-    hl.dsp.exec_cmd("systemd-ac-power && hyprctl dispatch dpms off || systemctl suspend"),
+    hl.dsp.exec_cmd("loginctl lock-session && (systemd-ac-power && hyprctl dispatch dpms off || systemctl suspend)"),
     { locked = true })
 
 -- When opening lid -> Turn screen back on
