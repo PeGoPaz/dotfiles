@@ -115,36 +115,9 @@ hl.config({
         enabled = true,
     },
 
-    -- Ref https://wiki.hypr.land/Configuring/Workspace-Rules/
-    -- "Smart gaps" / "No gaps when only"
-    -- uncomment all if you wish to use that.
-    -- workspace = w[tv1], gapsout:0, gapsin:0
-    -- workspace = f[1], gapsout:0, gapsin:0
-    -- windowrule {
-    --     name = no-gaps-wtv1
-    --     match:float = false
-    --     match:workspace = w[tv1]
-    --     border_size = 0
-    --     rounding = 0
-    -- }
-    -- windowrule {
-    --     name = no-gaps-f1
-    --     match:float = false
-    --     match:workspace = f[1]
-    --     border_size = 0
-    --     rounding = 0
-    -- }
-
-    -- See https://wiki.hypr.land/Configuring/Dwindle-Layout/ for more
-    -- dwindle = {
-    --     pseudotile    = true, -- Master switch for pseudotiling. Enabling is bound to mainMod + P below
-    --     preserve_split = true, -- You probably want this
-    -- },
-
-    -- See https://wiki.hypr.land/Configuring/Master-Layout/ for more
-    master = {
-        new_status = "master",
-    },
+    -- Dwindle is the layout (set in general above). Its only remaining option
+    -- is dwindle:preserve_split; pseudotile is no longer a config value, it is
+    -- per-window state that the SUPER+P bind toggles.
 
     -- https://wiki.hypr.land/Configuring/Variables/#misc
     misc = {
@@ -193,14 +166,13 @@ local mainMod = "SUPER" -- Sets "Windows" key as main modifier
 -- See https://wiki.hypr.land/Configuring/Binds/ for more
 hl.bind(mainMod .. " + return",       hl.dsp.exec_cmd(terminal))
 hl.bind(mainMod .. " + Q",            hl.dsp.window.close())
--- bind = $mainMod, M, exec, command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch exit
 hl.bind(mainMod .. " + E",            hl.dsp.exec_cmd(fileManager))
 hl.bind(mainMod .. " + B",            hl.dsp.exec_cmd(browser))
 hl.bind(mainMod .. " + W",            hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mainMod .. " + A",            hl.dsp.exec_cmd(menu))
 hl.bind(mainMod .. " + V",            hl.dsp.exec_cmd('cliphist list | fuzzel --dmenu --prompt "clipboard: " | cliphist decode | wl-copy'))
 hl.bind(mainMod .. " + P",            hl.dsp.window.pseudo()) -- dwindle
--- bind = $mainMod, J, togglesplit, # dwindle
+-- Not bound, but available if you want it: hl.dsp.layout("togglesplit")
 hl.bind(mainMod .. " + L",            hl.dsp.exec_cmd("hyprlock"))
 
 -- Reload Waybar with Super + Shift + W
