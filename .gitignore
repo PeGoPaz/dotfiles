@@ -5,6 +5,3 @@
 # Wallpapers are large and personal; drop your own at the path hyprpaper.conf
 # points to (~/Pictures/wallpapers/wallpaper.jpg).
 wallpapers/
-
-# Personal beginner guide - kept locally, not published
-GUIDE.md
