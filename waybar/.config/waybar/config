@@ -37,7 +37,6 @@
         "spacing": 10
     },
     "hyprland/workspaces": {
-        "disable-scroll": true,
         "all-outputs": true,
         "format": "{name}",
         "persistent-workspaces": {
