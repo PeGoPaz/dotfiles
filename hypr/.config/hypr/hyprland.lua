@@ -16,10 +16,10 @@ hl.monitor({
 --## MY PROGRAMS ###
 --##################
 
-local terminal = "kitty"
-local fileManager = "thunar"
-local menu = "rofi -show drun"
-local browser = "brave-origin"
+local terminal = "ghostty"
+local fileManager = "ghostty -e ranger"
+local menu = "fuzzel"
+local browser = "firefox"
 
 --#############################
 --## ENVIRONMENT VARIABLES ###
@@ -200,17 +200,16 @@ hl.bind(mainMod .. " + E",            hl.dsp.exec_cmd(fileManager))
 hl.bind(mainMod .. " + B",            hl.dsp.exec_cmd(browser))
 hl.bind(mainMod .. " + W",            hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mainMod .. " + A",            hl.dsp.exec_cmd(menu))
-hl.bind(mainMod .. " + V",            hl.dsp.exec_cmd('cliphist list | rofi -dmenu -p "Clipboard" | cliphist decode | wl-copy'))
+hl.bind(mainMod .. " + V",            hl.dsp.exec_cmd('cliphist list | fuzzel --dmenu --prompt "clipboard: " | cliphist decode | wl-copy'))
 hl.bind(mainMod .. " + P",            hl.dsp.window.pseudo()) -- dwindle
 -- bind = $mainMod, J, togglesplit, # dwindle
 hl.bind(mainMod .. " + L",            hl.dsp.exec_cmd("hyprlock"))
-hl.bind(mainMod .. " + T",            hl.dsp.exec_cmd("prime-run /usr/games/tlauncher/lib/jvm/jre/bin/java -Dfile.encoding=UTF8 -jar /usr/games/tlauncher/starter-core.jar"))
 
 -- Reload Waybar with Super + Shift + W
 hl.bind(mainMod .. " + SHIFT + W",    hl.dsp.exec_cmd("killall -SIGUSR2 waybar"))
 
 -- Power Menu (Super + Backspace)
-hl.bind(mainMod .. " + Backspace",    hl.dsp.exec_cmd("~/.config/rofi/powermenu.sh"))
+hl.bind(mainMod .. " + Backspace",    hl.dsp.exec_cmd("~/.config/hypr/scripts/powermenu.sh"))
 
 -- Move focus with mainMod + arrow keys
 hl.bind(mainMod .. " + left",         hl.dsp.focus({ direction = "left"  }))
@@ -263,7 +262,7 @@ hl.bind("XF86MonBrightnessUp",        hl.dsp.exec_cmd("brightnessctl -e4 -n2 set
 hl.bind("XF86MonBrightnessDown",      hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%-"),                   { locked = true, repeating = true })
 
 -- Screenshot (Print Screen)
-hl.bind("Print",                      hl.dsp.exec_cmd("~/.config/rofi/screenshot.sh"))
+hl.bind("Print",                      hl.dsp.exec_cmd("~/.config/hypr/scripts/screenshot.sh"))
 
 -- Requires playerctl
 hl.bind("XF86AudioNext",              hl.dsp.exec_cmd("playerctl next"),        { locked = true })
@@ -327,13 +326,14 @@ hl.window_rule({
 --## AUTOSTART ####
 --#################
 
+-- Only what this config owns. The polkit agent, xdg-desktop-portal, the
+-- greeter and audio are left to CachyOS - starting them twice causes more
+-- trouble than it solves.
 hl.on("hyprland.start", function()
-    hl.exec_cmd("dunst & waybar & blueman-applet")
-    hl.exec_cmd("sh -c 'hyprpaper & sleep 0.8; hyprctl hyprpaper wallpaper \"eDP-1,/home/shyam/dotfiles-black-minimal/wallpapers/starry-sky.jpg\"'")
+    hl.exec_cmd("waybar")
+    hl.exec_cmd("mako")
+    hl.exec_cmd("hyprpaper")
+    hl.exec_cmd("hypridle")
     hl.exec_cmd("wl-paste --type text --watch cliphist store")   -- Stores only text data
     hl.exec_cmd("wl-paste --type image --watch cliphist store")  -- Stores only image data
-    hl.exec_cmd("kdeconnect-indicator")                          -- install kdeconnect and use this
-    hl.exec_cmd("hypridle")
-    hl.exec_cmd("/home/shyam/.config/hypr/scripts/watch-network.sh") -- captive portal auto-login prompt
-    hl.exec_cmd("mcontrolcenter")                                -- msi center for linux - mcontrolcenter-bin aur package
 end)
