@@ -1,7 +1,7 @@
 # -----------------------------------------------------------------------------
 # FONTS
 # -----------------------------------------------------------------------------
-font-family = CaskaydiaCove Nerd Font Mono
+font-family = JetBrainsMono Nerd Font Mono
 font-size = 12
 
 # -----------------------------------------------------------------------------
@@ -11,33 +11,37 @@ window-padding-x = 10
 window-padding-y = 10
 
 # -----------------------------------------------------------------------------
-# THEME: Minimal Off-Black
+# THEME: monochrome, one accent
+# bg #0f0f0f  surface #1a1a1a  border #2a2a2a  muted #6e6e6e  text #e6e6e6
 # -----------------------------------------------------------------------------
-background = #1a1a1a
+background = #0f0f0f
 foreground = #e6e6e6
 
-selection-background = #e6e6e6
-selection-foreground = #1a1a1a
+selection-background = #2a2a2a
+selection-foreground = #e6e6e6
 
-cursor-color = #e6e6e6
-cursor-text = #1a1a1a
+# accent marks focus only - here that is the cursor
+cursor-color = #c678dd
+cursor-text = #0f0f0f
 
 # -----------------------------------------------------------------------------
-# COLOR PALETTE (Soft & desaturated)
+# ANSI PALETTE
+# Desaturated rather than monochrome: ls, git and diff output has to stay
+# readable. Red is the critical colour, magenta is the accent.
 # -----------------------------------------------------------------------------
 palette = 0=#1a1a1a
 palette = 1=#ff6b6b
-palette = 2=#98c379
-palette = 3=#e5c07b
-palette = 4=#61afef
+palette = 2=#8fa876
+palette = 3=#c9a86a
+palette = 4=#6a8fb5
 palette = 5=#c678dd
-palette = 6=#56b6c2
+palette = 6=#6ea8a8
 palette = 7=#e6e6e6
-palette = 8=#888888
-palette = 9=#ff6b6b
-palette = 10=#98c379
-palette = 11=#e5c07b
-palette = 12=#61afef
-palette = 13=#c678dd
-palette = 14=#56b6c2
+palette = 8=#6e6e6e
+palette = 9=#ff8787
+palette = 10=#a3bd88
+palette = 11=#dcbb7c
+palette = 12=#7ea3c9
+palette = 13=#d59aea
+palette = 14=#82bcbc
 palette = 15=#ffffff
