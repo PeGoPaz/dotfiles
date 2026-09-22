@@ -11,6 +11,9 @@
     ],
     "modules-right": [
         "mpris",
+        "custom/gpu",
+        "custom/profile",
+        "bluetooth",
         "wireplumber",
         "network",
         "battery",
@@ -37,7 +40,9 @@
         "disable-scroll": true,
         "all-outputs": true,
         "format": "{name}",
-        "persistent-workspaces": {}
+        "persistent-workspaces": {
+            "*": 6
+        }
     },
     "hyprland/window": {
         "max-length": 50,
@@ -47,6 +52,27 @@
         "format": "{title}",
         "max-length": 20,
         "ellipsis": "..."
+    },
+    "custom/gpu": {
+        "exec": "supergfxctl -g 2>/dev/null",
+        "interval": 30,
+        "format": "󰢮 {}",
+        "tooltip": false
+    },
+    "custom/profile": {
+        "exec": "asusctl profile -p 2>/dev/null | awk '{print $NF}'",
+        "interval": 30,
+        "format": "󰓅 {}",
+        "on-click": "asusctl profile -n",
+        "tooltip": false
+    },
+    "bluetooth": {
+        "format": "󰂯",
+        "format-off": "󰂲",
+        "format-disabled": "󰂲",
+        "format-connected": "󰂱",
+        "tooltip-format": "{controller_alias}",
+        "tooltip-format-connected": "{device_enumerate}"
     },
     "wireplumber": {
         "format": "{icon}",
@@ -62,25 +88,24 @@
         "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
     },
     "network": {
-        "format-wifi": "",
+        "format-wifi": "",
         "format-ethernet": "󰈀",
         "format-disconnected": "󰤮",
         "tooltip-format": "{essid} ({signalStrength}%)"
     },
     "battery": {
         "states": {
-            "warning": 30,
-            "critical": 15
+            "critical": 12
         },
         "format": "{capacity}%",
-        "format-charging": "",
-        "format-plugged": "",
-        "format-full": "",
+        "format-charging": "",
+        "format-plugged": "",
+        "format-full": "",
         "format-discharging": "{capacity}%",
         "tooltip-format": "{time} ({capacity}%)"
     },
     "clock": {
-        "format": "{:%I:%M %p  %d-%m-%Y}",
+        "format": "{:%H:%M  %Y-%m-%d}",
         "tooltip-format": "<big>{:%Y %B}</big>\n<tt>{calendar}</tt>"
     }
 }

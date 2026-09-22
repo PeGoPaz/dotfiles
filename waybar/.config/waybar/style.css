@@ -1,19 +1,20 @@
+/* Monochrome: bg #0f0f0f, surface #1a1a1a, border #2a2a2a, muted #6e6e6e,
+   text #e6e6e6. Accent #c678dd marks focus only. #ff6b6b is critical only. */
+
 * {
     border: none;
     border-radius: 0;
-    font-family: "CaskaydiaCove Nerd Font Mono", monospace;
+    font-family: "JetBrainsMono Nerd Font Mono", monospace;
     font-size: 14px;
     min-height: 0;
 }
 
 window#waybar {
-    background-color: #1a1a1a;
-    /* Off-Black */
+    background-color: #0f0f0f;
     color: #e6e6e6;
-    /* Off-White */
 }
 
-/* Workspace indicators */
+/* Workspaces */
 window#waybar #workspaces,
 window#waybar #hyprland-workspaces {
     padding: 0;
@@ -24,9 +25,8 @@ window#waybar #hyprland-workspaces button {
     min-width: 0;
     padding: 0 5px;
     margin: 0 2px;
-    border-radius: 3px;
     background: transparent;
-    color: #8a8a8a;
+    color: #6e6e6e;
     box-shadow: none;
     text-shadow: none;
     border: none;
@@ -35,33 +35,34 @@ window#waybar #hyprland-workspaces button {
 
 window#waybar #workspaces button label,
 window#waybar #hyprland-workspaces button label {
-    color: #8a8a8a;
+    color: #6e6e6e;
 }
 
 window#waybar #workspaces button:hover,
 window#waybar #hyprland-workspaces button:hover {
-    color: #cfcfcf;
-    background: transparent;
+    color: #e6e6e6;
+    background: #1a1a1a;
 }
 
 window#waybar #workspaces button:hover label,
 window#waybar #hyprland-workspaces button:hover label {
-    color: #cfcfcf;
+    color: #e6e6e6;
 }
 
+/* Focus is the one place the accent appears */
 window#waybar #workspaces button.active,
 window#waybar #workspaces button.focused,
 window#waybar #hyprland-workspaces button.active,
 window#waybar #hyprland-workspaces button.focused {
-    color: #e6e6e6;
-    background: #303030;
+    color: #c678dd;
+    background: #1a1a1a;
 }
 
 window#waybar #workspaces button.active label,
 window#waybar #workspaces button.focused label,
 window#waybar #hyprland-workspaces button.active label,
 window#waybar #hyprland-workspaces button.focused label {
-    color: #e6e6e6;
+    color: #c678dd;
 }
 
 window#waybar #workspaces button.visible,
@@ -75,14 +76,16 @@ window#waybar #hyprland-workspaces button.visible label {
 }
 
 #window {
-    font-weight: bold;
+    color: #6e6e6e;
 }
 
-/* Right Modules */
-#mpris {
+/* Right modules */
+#mpris,
+#custom-gpu,
+#custom-profile {
     padding: 0 10px;
     background-color: transparent;
-    color: #e6e6e6;
+    color: #6e6e6e;
 }
 
 #wireplumber {
@@ -100,6 +103,11 @@ window#waybar #hyprland-workspaces button.visible label {
     color: #e6e6e6;
 }
 
+#bluetooth.off,
+#bluetooth.disabled {
+    color: #6e6e6e;
+}
+
 #battery,
 #clock,
 #tray,
@@ -109,17 +117,11 @@ window#waybar #hyprland-workspaces button.visible label {
     color: #e6e6e6;
 }
 
-/* Specific styling for states */
 #battery.charging {
     color: #e6e6e6;
 }
 
-#battery.warning {
-    color: #ebdbb2;
-    /* Muted Yellow for warning */
-}
-
+/* The only red in the bar */
 #battery.critical {
-    color: #cc241d;
-    /* Muted Red for critical */
+    color: #ff6b6b;
 }
