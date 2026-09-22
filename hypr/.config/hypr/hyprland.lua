@@ -91,8 +91,8 @@ hl.config({
         },
         -- Set to true to enable resizing windows by clicking and dragging on borders and gaps
         resize_on_border = false,
-        -- Please see https://wiki.hypr.land/Configuring/Tearing/ before you turn this on
-        allow_tearing = false,
+        -- Required for the `immediate` window rule below to do anything.
+        allow_tearing = true,
         layout = "dwindle",
     },
 
@@ -309,6 +309,21 @@ hl.window_rule({
         pin        = false,
     },
     no_focus = true,
+})
+
+-- Games. idle_inhibit keeps the screen from blanking mid-session, immediate
+-- lets frames tear for latency (needs general.allow_tearing, set above), and
+-- fullscreen skips the windowed first frame.
+-- UNVERIFIED: field names are the snake_case of the hyprlang rules, matching
+-- no_focus / suppress_event below. Confirm against `hyprctl clients` classes.
+hl.window_rule({
+    name = "steam-games",
+    match = {
+        class = "^steam_app_\\d+$",
+    },
+    idle_inhibit = "always",
+    immediate    = true,
+    fullscreen   = true,
 })
 
 -- Hyprland-run windowrule
