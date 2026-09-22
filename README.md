@@ -3,8 +3,9 @@
 Monochrome Hyprland setup for an ASUS TUF A14 (FA401GM) running CachyOS.
 Off-black greyscale with a single purple accent.
 
-Hardware this is written for: AMD Radeon 890M (iGPU) plus NVIDIA RTX 5060 (dGPU),
-a single internal panel `eDP-1` at 2560x1600@165, Limine as the bootloader.
+Hardware this is written for: Ryzen AI 9 465 with Radeon 880M (iGPU) plus NVIDIA
+RTX 5060 (dGPU), a single internal panel `eDP-1` at 2560x1600@165, Limine as the
+bootloader. No fingerprint reader on this machine, so the lock screen is password only.
 
 ## Credits
 
@@ -100,6 +101,7 @@ are the remainder, and `check.sh` tests all of them:
 | Keyboard backlight device `asus::kbd_backlight` | `brightnessctl -l` | One line in `hypridle.conf` |
 | Output shape of `supergfxctl -g` and `asusctl profile -p` | Run them by hand | Waybar module shows empty |
 | `immediate` tears cleanly on NVIDIA | Launch something from Steam | Drop the `immediate` rule |
+| The lid switch is named `Lid Switch` | `hyprctl devices` | Rename it in the two `switch:` binds |
 
 Checking names is not the same as proving the whole config loads. It caught two real
 breakages that were inherited from upstream - hyprpaper's config format and three
