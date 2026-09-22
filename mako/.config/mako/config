@@ -1,0 +1,21 @@
+# Monochrome notifications. Red is reserved for critical.
+font=JetBrainsMono Nerd Font Mono 11
+background-color=#0f0f0f
+text-color=#e6e6e6
+border-color=#2a2a2a
+border-size=1
+border-radius=0
+padding=12
+margin=8
+width=340
+default-timeout=5000
+layer=overlay
+anchor=top-right
+max-visible=5
+
+[urgency=low]
+text-color=#6e6e6e
+
+[urgency=critical]
+border-color=#ff6b6b
+default-timeout=0
