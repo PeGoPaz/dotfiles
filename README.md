@@ -83,18 +83,17 @@ emergency mode and binds three keys of its own:
 those on purpose, so that key does nothing. Use `SUPER + M`, or switch to a TTY
 with `Ctrl+Alt+F2`.
 
-To put the stock config back from a TTY:
+To put CachyOS's config back from a TTY, remove this one - the `.conf` underneath
+was never touched, and Hyprland falls back to it:
 
 ```bash
 cd ~/dotfiles && stow -D hypr
-cp ~/.config/hypr/hyprland.lua.stock ~/.config/hypr/hyprland.lua
 ```
 
 If `stow -D` did not clear the symlink:
 
 ```bash
 rm -f ~/.config/hypr/hyprland.lua
-cp ~/.config/hypr/hyprland.lua.stock ~/.config/hypr/hyprland.lua
 ```
 
 `hyprctl configerrors` prints the same list as the overlay. The log has more:
