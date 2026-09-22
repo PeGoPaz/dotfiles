@@ -19,31 +19,50 @@ all rights and this fork cannot grant a licence it does not hold.
 
 ## Read this before you stow anything
 
-The Hyprland config is written in Lua, which is the official format since Hyprland
-0.55 (hyprlang `.conf` is deprecated upstream). It was written without access to the
-machine, so **field names in the Lua API are an assumption, not a verified fact**. A
-wrong key name means Hyprland does not start - on a freshly installed laptop that is
-a bad first impression. Do this in order:
+CachyOS ships its own Hyprland setup through `/etc/skel`, so a fresh account already
+has `~/.config/hypr/hyprland.conf`, `~/.config/waybar/` and `~/.config/mako/`. Two
+things follow from that.
+
+**Stow will refuse to overwrite the waybar and mako configs.** They are real files,
+not symlinks, so move them aside first. The `hypr`, `ghostty`, `fuzzel` and `nvim`
+packages do not collide - this config is `hyprland.lua` where CachyOS ships
+`hyprland.conf`, and CachyOS ships wofi rather than fuzzel.
+
+**Rolling back needs no backup.** Hyprland loads `hyprland.lua` if it exists and
+falls back to `hyprland.conf` otherwise, and this repo never touches the `.conf`.
+So `stow -D hypr` alone puts CachyOS's own working config back.
+
+Do this in order:
 
 1. Boot CachyOS on its stock config and confirm a Hyprland session comes up.
-2. Keep a known-good copy:
-   ```bash
-   cp ~/.config/hypr/hyprland.lua ~/.config/hypr/hyprland.lua.stock
-   mkdir -p ~/.config/stock-backup
-   cp -r ~/.config/waybar ~/.config/mako ~/.config/fuzzel ~/.config/stock-backup/ 2>/dev/null
-   ```
-3. Check the version this config is aimed at:
+2. Check the version this config is aimed at:
    ```bash
    hyprctl version
    ```
-   If the major version differs from 0.55+, re-read the wiki before continuing.
-4. Only now:
+   It was written against 0.56.2. A different major version is worth a look at the
+   wiki before continuing.
+3. Move the two colliding configs aside:
+   ```bash
+   mv ~/.config/waybar ~/.config/waybar.stock
+   mv ~/.config/mako ~/.config/mako.stock
+   ```
+4. Now stow:
    ```bash
    git clone https://github.com/PeGoPaz/dotfiles.git ~/dotfiles
    cd ~/dotfiles
    stow hypr ghostty waybar fuzzel mako nvim
    ```
-5. Log out and back in.
+5. Log out and back in, then run `~/.config/hypr/scripts/check.sh`.
+
+### What this config takes over from CachyOS
+
+Replacing `hyprland.conf` with `hyprland.lua` drops everything CachyOS set in it.
+Two of those settings are worth having and are carried over here: `misc:vrr = 2`
+and `render:direct_scanout`. Three are deliberately left behind - window snapping,
+window swallowing, and CachyOS's four-finger gesture set.
+
+Worth knowing: CachyOS's own config still sets `dwindle:pseudotile`, which Hyprland
+0.56.2 no longer has. Stock configs go stale too.
 
 ### If the config has errors
 
