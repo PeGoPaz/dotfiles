@@ -158,15 +158,21 @@ hl.config({
 
     -- https://wiki.hypr.land/Configuring/Variables/#input
     input = {
-        kb_layout  = "us",
+        kb_layout  = "us,ru",
         kb_variant = "",
         kb_model   = "",
-        kb_options = "",
+        kb_options = "grp:alt_shift_toggle",
         kb_rules   = "",
         follow_mouse = 1,
         sensitivity  = 0, -- -1.0 - 1.0, 0 means no modification.
+        -- UNVERIFIED: these three key names are the highest-risk guess in this
+        -- file. hyprlang spells the middle one tap-to-click, which is not a
+        -- valid Lua identifier, so the underscore form is the assumption. If
+        -- Hyprland refuses to start, check the log for this block first.
         touchpad = {
-            natural_scroll = true,
+            natural_scroll       = true,
+            tap_to_click         = true,
+            disable_while_typing = true,
         },
     },
 })
@@ -176,13 +182,6 @@ hl.gesture({
     fingers   = 3,
     direction = "horizontal",
     action    = "workspace",
-})
-
--- Example per-device config
--- See https://wiki.hypr.land/Configuring/Keywords/#per-device-input-configs for more
-hl.device({
-    name        = "epic-mouse-v1",
-    sensitivity = -0.5,
 })
 
 --##################
