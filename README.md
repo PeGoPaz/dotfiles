@@ -5,7 +5,7 @@ Off-black greyscale with a single purple accent.
 
 Hardware this is written for: Ryzen AI 9 465 with Radeon 880M (iGPU) plus NVIDIA
 RTX 5060 (dGPU), a single internal panel `eDP-1` at 2560x1600@165, Limine as the
-bootloader. No fingerprint reader on this machine, so the lock screen is password only.
+bootloader. 
 
 ## Credits
 
