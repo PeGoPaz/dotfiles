@@ -198,23 +198,59 @@ change the 900s listener in `hypridle.conf` once hibernation is proven to work b
 
 ## Keybindings
 
-`SUPER` is the modifier.
+`SUPER` is the key with the Windows logo.
+
+**Programs**
 
 | Key | Action |
 |---|---|
-| `Return` | Ghostty |
-| `Q` | close window |
-| `E` | ranger in Ghostty |
-| `B` | Firefox |
-| `A` | fuzzel |
-| `V` | clipboard history through fuzzel |
-| `L` | lock |
-| `W` | toggle floating |
-| `S` / `Shift+S` | scratchpad / move to scratchpad |
-| `Backspace` | power menu |
-| `Print` | screenshot (region or full screen) |
-| `1`-`0` | workspaces, `Shift` to move the window |
-| `Shift+W` | reload Waybar |
+| `SUPER + Return` | Ghostty |
+| `SUPER + E` | ranger in Ghostty |
+| `SUPER + B` | Firefox |
+| `SUPER + A` | fuzzel launcher |
+| `SUPER + V` | clipboard history through fuzzel |
+| `SUPER + L` | lock |
+| `SUPER + Backspace` | power menu - lock, logout, suspend, reboot, shutdown |
+| `Print` | screenshot - asks region or full screen, copies it too |
+| `SUPER + Shift + W` | reload Waybar |
+
+**Windows**
+
+| Key | Action |
+|---|---|
+| `SUPER + Q` | close window |
+| `SUPER + W` | toggle floating |
+| `SUPER + P` | pseudotile - keeps its own size inside its tile |
+| `SUPER + arrows` | move focus left, right, up, down |
+| `SUPER + left drag` | move window |
+| `SUPER + right drag` | resize window |
+
+**Workspaces**
+
+| Key | Action |
+|---|---|
+| `SUPER + 1` ... `SUPER + 0` | go to workspace 1-10 |
+| `SUPER + Shift + 1` ... `0` | move the window to workspace 1-10 |
+| `SUPER + scroll` | step through existing workspaces |
+| `SUPER + S` | show or hide the scratchpad |
+| `SUPER + Shift + S` | send the window to the scratchpad |
+| three-finger swipe | step through workspaces |
+
+**Laptop keys** - these also work on the lock screen.
+
+| Key | Action |
+|---|---|
+| volume keys | up, down, mute, mute microphone |
+| brightness keys | up, down |
+| media keys | next, previous, play/pause |
+
+**Lid**
+
+| Event | Action |
+|---|---|
+| close, on battery | lock, then suspend |
+| close, on AC | lock, then screen off |
+| open | screen on, panel mode re-applied |
 
 ## Notes
 
