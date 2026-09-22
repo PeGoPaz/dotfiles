@@ -28,7 +28,7 @@ local browser = "firefox"
 hl.env("XCURSOR_SIZE", "24")
 hl.env("HYPRCURSOR_SIZE", "24")
 
--- Hybrid GPU: Radeon 890M (iGPU) + RTX 5060 (dGPU), modes switched with
+-- Hybrid GPU: Radeon 880M (iGPU) + RTX 5060 (dGPU), modes switched with
 -- supergfxctl. Deliberately NOT setting AQ_DRM_DEVICES / WLR_DRM_DEVICES:
 -- pinning the compositor to the nvidia node means the session refuses to
 -- start once supergfxctl is switched to Integrated. LIBVA_DRIVER_NAME is
