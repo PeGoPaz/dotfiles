@@ -76,12 +76,13 @@ emergency mode and binds three keys of its own:
 |---|---|---|
 | `SUPER + M` | exit Hyprland | yes |
 | `SUPER + R` | `hyprland-run` | yes, if installed |
-| `SUPER + Q` | first known terminal | **no** |
+| `SUPER + Q` | first known terminal | probably |
 
 `SUPER + Q` searches a hardcoded list - `kitty`, `alacritty`, `foot`, `wezterm`,
-`gnome-terminal`, `xterm` - and Ghostty is not on it. This setup installs none of
-those on purpose, so that key does nothing. Use `SUPER + M`, or switch to a TTY
-with `Ctrl+Alt+F2`.
+`gnome-terminal`, `xterm` - which Ghostty is not on. CachyOS uses alacritty as its
+stock terminal, so it is most likely already installed and the key will work, but
+nothing declares it as a dependency, so do not count on it. `SUPER + M` and a TTY
+on `Ctrl+Alt+F2` are the reliable ways out.
 
 To put CachyOS's config back from a TTY, remove this one - the `.conf` underneath
 was never touched, and Hyprland falls back to it:
