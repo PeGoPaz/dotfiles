@@ -113,12 +113,21 @@ These live outside `$HOME` and need root, so they are instructions rather than f
 - **Kernel parameter `nvidia_drm.fbdev=1`.** With Limine this goes in
   `/etc/default/limine` followed by `limine-update`. On drivers 545 and newer
   `nvidia_drm.modeset=1` is already the default and usually does not need adding.
-- **Packages:**
+- **Packages.** All binary packages - nothing here is built from the AUR.
   ```
   hyprland hyprpaper hypridle hyprlock hyprsunset waybar ghostty fuzzel mako ranger
-  firefox grim slurp cliphist wl-clipboard brightnessctl asusctl supergfxctl
+  firefox grim slurp cliphist wl-clipboard brightnessctl playerctl pavucontrol
+  libnotify asusctl rog-control-center supergfxctl nvidia-prime
   ttf-jetbrains-mono-nerd
   ```
+  `supergfxctl` is not in the Arch repositories. It comes from CachyOS's own signed
+  repository, which is enabled by default on CachyOS, so plain `pacman -S` finds it.
+  Worth knowing: upstream supergfxctl has not cut a release since mid-2025. That is a
+  question of project activity, not of the package's integrity.
+
+  Three of these back things the configs already reference: `pavucontrol` is the volume
+  module's click action, `libnotify` provides the `notify-send` used by the screenshot
+  script, and `playerctl` drives the media keys.
 - **A wallpaper.** `hyprpaper.conf` points at `~/Pictures/wallpapers/wallpaper.jpg`.
   Images are gitignored, so put your own there.
 
