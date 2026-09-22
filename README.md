@@ -44,9 +44,26 @@ a bad first impression. Do this in order:
    ```
 5. Log out and back in.
 
-### If the session does not come up
+### If the config has errors
 
-Switch to a TTY with `Ctrl+Alt+F2`, log in, and undo it:
+Hyprland does not refuse to start over a bad config. It comes up, and lists the
+errors in an overlay on screen, so you can read them without leaving the session.
+
+If an error is early enough that no keybind got registered, Hyprland also trips
+emergency mode and binds three keys of its own:
+
+| Key | Action | Works here? |
+|---|---|---|
+| `SUPER + M` | exit Hyprland | yes |
+| `SUPER + R` | `hyprland-run` | yes, if installed |
+| `SUPER + Q` | first known terminal | **no** |
+
+`SUPER + Q` searches a hardcoded list - `kitty`, `alacritty`, `foot`, `wezterm`,
+`gnome-terminal`, `xterm` - and Ghostty is not on it. This setup installs none of
+those on purpose, so that key does nothing. Use `SUPER + M`, or switch to a TTY
+with `Ctrl+Alt+F2`.
+
+To put the stock config back from a TTY:
 
 ```bash
 cd ~/dotfiles && stow -D hypr
@@ -60,10 +77,9 @@ rm -f ~/.config/hypr/hyprland.lua
 cp ~/.config/hypr/hyprland.lua.stock ~/.config/hypr/hyprland.lua
 ```
 
-The cause is in the log - a Lua field error names the line and the key:
+`hyprctl configerrors` prints the same list as the overlay. The log has more:
 
 ```bash
-journalctl --user -b -p err | tail -40
 tail -60 ~/.local/share/hyprland/hyprland.log
 ```
 
