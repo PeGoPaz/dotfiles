@@ -107,16 +107,28 @@ hyprlock keys that no longer exist - but only a first boot proves the rest.
 
 ## First boot checklist
 
-1. `hyprctl monitors` - `eDP-1` reports 2560x1600@165, logical size 1600x1000.
-2. `brightnessctl -l` - confirm the keyboard backlight device name, fix `hypridle.conf`.
-3. `supergfxctl -g` and `asusctl profile -p` - the Waybar modules show mode and profile.
-4. Switch supergfxctl Hybrid to Integrated and back. The session must come up in both.
-   This is the check that no GPU is pinned anywhere.
-5. `Alt+Shift` switches between the `us` and `ru` layouts.
-6. Touchpad: tap to click, natural scroll, no stray clicks while typing.
-7. Launch a game from Steam: the screen does not blank, and tearing has no artefacts.
-8. `hyprctl hyprsunset temperature` matches the time of day.
-9. Leave it idle for 15 minutes and confirm it suspends.
+Run the script. It checks everything that can be checked automatically and exits
+non-zero if anything failed:
+
+```bash
+~/.config/hypr/scripts/check.sh
+```
+
+It verifies the panel mode and scale, that the touchpad and layout options really
+took effect, that hyprpaper actually loaded a wallpaper, that the keyboard backlight
+device matches what `hypridle.conf` names, that every program the configs call is
+installed, and that `supergfxctl` and `asusctl` answer.
+
+Three things it marks `SKIP`, because they need you:
+
+1. Launch a game from Steam - the screen must not blank, and tearing must have no
+   artefacts. If it does, drop the `immediate` rule.
+2. Leave the laptop idle for 15 minutes and confirm it suspends.
+3. Switch supergfxctl Hybrid to Integrated and back. The session must come up in
+   both - that is the check that no GPU is pinned anywhere.
+
+Worth eyeballing too: `Alt+Shift` switches `us`/`ru`, and `hyprctl hyprsunset
+temperature` should match the time of day.
 
 ## Why the GPU is not pinned anywhere
 
