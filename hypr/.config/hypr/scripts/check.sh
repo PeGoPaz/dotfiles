@@ -102,6 +102,22 @@ else
     fail "brightnessctl not installed"
 fi
 
+# --- lid switch ----------------------------------------------------------------
+# The two switch: binds address the device by name. A different name means they
+# silently never fire - and a laptop that does not lock on lid close is worse
+# than one that does nothing.
+section "lid switch"
+want_sw=$(grep -oE 'switch:on:[^"]+' ~/.config/hypr/hyprland.lua 2>/dev/null \
+    | head -1 | cut -d: -f3)
+if [ -z "$want_sw" ]; then
+    skip "no switch: bind found in hyprland.lua"
+elif hyprctl devices 2>/dev/null | grep -qF "$want_sw"; then
+    pass "'$want_sw' is present in hyprctl devices"
+else
+    fail "hyprland.lua binds '$want_sw' but hyprctl devices does not list it"
+    hyprctl devices 2>/dev/null | sed -n '/[Ss]witch/,/^$/p' | sed 's/^/        /'
+fi
+
 # --- binaries ------------------------------------------------------------------
 section "programs"
 missing=""
