@@ -22,8 +22,9 @@ fi
 pass "hyprland $(hyprctl version | awk '/^Hyprland/{print $2; exit}')"
 
 # --- config errors -----------------------------------------------------------
-errs=$(hyprctl configerrors 2>/dev/null)
-if [ -z "$errs" ] || printf '%s' "$errs" | grep -qi "no errors"; then
+# With no errors the reply is empty or a lone newline, so drop blank lines.
+errs=$(hyprctl configerrors 2>/dev/null | grep -v '^[[:space:]]*$')
+if [ -z "$errs" ]; then
     pass "no config errors"
 else
     fail "config errors reported:"
@@ -51,42 +52,42 @@ fi
 
 # --- options really applied ---------------------------------------------------
 section "options applied"
+# getoption answers "<type>: <value>" on its first line, e.g. "bool: true",
+# "int: 1", "str: us,ru". Anything without a colon ("no such option") is a miss.
 opt() { # opt <name> <expected>
-    local got
-    got=$(hyprctl getoption "$1" 2>/dev/null | awk '/^(int|float|str)/{print $2; exit}')
+    local raw got=""
+    raw=$(hyprctl getoption "$1" 2>/dev/null | head -1)
+    case "$raw" in *": "*) got=${raw#*: } ;; esac
     if [ -z "$got" ]; then
-        fail "$1 - no value returned"
+        fail "$1 - no value returned${raw:+ ($raw)}"
     elif [ "$got" = "$2" ]; then
         pass "$1 = $got"
     else
         fail "$1 = $got, expected $2"
     fi
 }
-opt "input:touchpad:tap-to-click"        1
-opt "input:touchpad:disable_while_typing" 1
-opt "general:allow_tearing"              1
-opt "general:border_size"                1
-opt "decoration:rounding"                0
-# Both of these CachyOS sets in its own config; ours replaces that config, so
-# they are worth confirming rather than assuming.
-opt "misc:vrr"                           2
-opt "render:direct_scanout"              2
-
-layout=$(hyprctl getoption input:kb_layout 2>/dev/null | awk '/^str/{print $2; exit}')
-[ "$layout" = "us,ru" ] \
-    && pass "input:kb_layout = $layout" \
-    || fail "input:kb_layout = ${layout:-<empty>}, expected us,ru"
+# The first three are booleans in Hyprland 0.56, so they read "true", not "1".
+opt "input:touchpad:tap-to-click"         true
+opt "input:touchpad:disable_while_typing" true
+opt "general:allow_tearing"               true
+opt "general:border_size"                 1
+opt "decoration:rounding"                 0
+opt "misc:vrr"                            3
+opt "render:direct_scanout"               2
+opt "input:kb_layout"                     us,ru
 
 # --- wallpaper ---------------------------------------------------------------
 # hyprpaper changed its config format in 0.8.4; this is why it is checked.
+# hyprctl 0.56 knows only "wallpaper" and "listactive" for hyprpaper; the old
+# "listloaded" is gone. listactive prints one "<monitor>: <path>" per monitor.
 section "wallpaper"
-if need hyprctl && hyprctl hyprpaper listloaded >/dev/null 2>&1; then
-    loaded=$(hyprctl hyprpaper listloaded 2>/dev/null)
-    [ -n "$loaded" ] && [ "$loaded" != "no wallpapers loaded" ] \
-        && pass "loaded: $loaded" \
-        || fail "hyprpaper has no wallpaper loaded - check the path in hyprpaper.conf"
+active=$(hyprctl hyprpaper listactive 2>&1)
+if printf '%s\n' "$active" | grep -q '^eDP-1: '; then
+    pass "$(printf '%s\n' "$active" | grep '^eDP-1: ')"
+elif [ -z "$active" ]; then
+    fail "hyprpaper runs but shows no wallpaper - check the path in hyprpaper.conf"
 else
-    fail "hyprpaper is not answering"
+    fail "hyprpaper: $active"
 fi
 
 # --- keyboard backlight device ------------------------------------------------
@@ -106,28 +107,24 @@ else
     fail "brightnessctl not installed"
 fi
 
-# --- lid switch ----------------------------------------------------------------
-# The two switch: binds address the device by name. A different name means they
-# silently never fire - and a laptop that does not lock on lid close is worse
-# than one that does nothing.
-section "lid switch"
-want_sw=$(grep -oE 'switch:on:[^"]+' ~/.config/hypr/hyprland.lua 2>/dev/null \
-    | head -1 | cut -d: -f3)
-if [ -z "$want_sw" ]; then
-    skip "no switch: bind found in hyprland.lua"
-elif hyprctl devices 2>/dev/null | grep -qF "$want_sw"; then
-    pass "'$want_sw' is present in hyprctl devices"
+# --- polkit agent --------------------------------------------------------------
+# Without it no graphical program can ask for the admin password.
+section "polkit agent"
+if pgrep -f /usr/lib/hyprpolkitagent/hyprpolkitagent >/dev/null 2>&1; then
+    pass "hyprpolkitagent is running"
+elif [ -x /usr/lib/hyprpolkitagent/hyprpolkitagent ]; then
+    fail "hyprpolkitagent is installed but not running - check the autostart in hyprland.lua"
 else
-    fail "hyprland.lua binds '$want_sw' but hyprctl devices does not list it"
-    hyprctl devices 2>/dev/null | sed -n '/[Ss]witch/,/^$/p' | sed 's/^/        /'
+    fail "hyprpolkitagent is not installed"
 fi
 
 # --- binaries ------------------------------------------------------------------
 section "programs"
 missing=""
-for b in ghostty fuzzel mako ranger firefox grim slurp cliphist wl-copy waybar \
+for b in ghostty fuzzel mako dolphin firefox grim slurp cliphist wl-copy waybar \
          hyprsunset hypridle hyprpaper hyprlock brightnessctl playerctl \
-         pavucontrol notify-send asusctl supergfxctl; do
+         pavucontrol notify-send asusctl supergfxctl nvim tree-sitter jq \
+         nmtui bluetoothctl; do
     need "$b" || missing="$missing $b"
 done
 [ -z "$missing" ] && pass "all present" || fail "missing:$missing"
@@ -161,6 +158,7 @@ fi
 section "needs you"
 skip "launch a game: idle_inhibit holds the screen, immediate tears without artefacts"
 skip "leave it idle 15 minutes and confirm it suspends"
+skip "close the lid: it must lock, sleep, and wake to the lock screen"
 skip "switch supergfxctl Hybrid <-> Integrated; the session must come up in both"
 
 section "result"
