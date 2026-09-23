@@ -71,7 +71,8 @@
         "format-disabled": "󰂲",
         "format-connected": "󰂱",
         "tooltip-format": "{controller_alias}",
-        "tooltip-format-connected": "{device_enumerate}"
+        "tooltip-format-connected": "{device_enumerate}",
+        "on-click": "ghostty -e bluetoothctl"
     },
     "wireplumber": {
         "format": "{icon}",
@@ -83,14 +84,15 @@
         ],
         "scroll-step": 5,
         "on-click": "pavucontrol",
-        "on-scroll-up": "wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+",
+        "on-scroll-up": "wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+",
         "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
     },
     "network": {
         "format-wifi": "",
         "format-ethernet": "󰈀",
         "format-disconnected": "󰤮",
-        "tooltip-format": "{essid} ({signalStrength}%)"
+        "tooltip-format": "{essid} ({signalStrength}%)",
+        "on-click": "ghostty -e nmtui"
     },
     "battery": {
         "states": {
