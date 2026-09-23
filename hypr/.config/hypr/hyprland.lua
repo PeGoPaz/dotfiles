@@ -317,10 +317,12 @@ hl.window_rule({
 --## AUTOSTART ####
 --#################
 
--- Only what this config owns. The polkit agent, xdg-desktop-portal, the
--- greeter and audio are left to CachyOS - starting them twice causes more
--- trouble than it solves.
+-- xdg-desktop-portal, the greeter and audio are left to CachyOS. The polkit
+-- agent is not: in CachyOS's stock setup the noctalia shell is the agent, and
+-- this config does not run noctalia, so without this line nothing would ask
+-- for a password when a graphical program needs admin rights.
 hl.on("hyprland.start", function()
+    hl.exec_cmd("/usr/lib/hyprpolkitagent/hyprpolkitagent")
     hl.exec_cmd("waybar")
     hl.exec_cmd("mako")
     hl.exec_cmd("hyprpaper")
