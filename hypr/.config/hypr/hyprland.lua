@@ -17,7 +17,7 @@ hl.monitor({
 --##################
 
 local terminal = "ghostty"
-local fileManager = "ghostty -e ranger"
+local fileManager = "dolphin"
 local menu = "fuzzel"
 local browser = "firefox"
 
@@ -36,6 +36,11 @@ hl.env("HYPRCURSOR_SIZE", "24")
 -- libva picks the driver per device on its own.
 hl.env("NVD_BACKEND", "direct")
 hl.env("ELECTRON_OZONE_PLATFORM_HINT", "auto")
+
+-- Qt programs (Dolphin among them) take their palette, icons and file dialogs
+-- from qt6ct. CachyOS sets this only for the uwsm session, through
+-- ~/.config/uwsm/env; setting it here makes the plain "Hyprland" session match.
+hl.env("QT_QPA_PLATFORMTHEME", "qt6ct")
 
 --####################
 --## LOOK AND FEEL ###
