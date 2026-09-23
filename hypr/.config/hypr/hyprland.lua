@@ -123,16 +123,17 @@ hl.config({
     misc = {
         force_default_wallpaper = 0,    -- 0 disables the bundled default wallpapers
         disable_hyprland_logo   = true, -- If true disables the random Hyprland logo / anime girl background :(
-        -- Adaptive sync on the 165Hz panel, fullscreen only so the desktop does
-        -- not flicker. CachyOS's stock config sets this too; replacing that
-        -- config wholesale would otherwise silently turn it off.
-        vrr = 2,
+        -- Adaptive sync on the 165Hz panel for fullscreen games only (3), so
+        -- video and the desktop never flicker. CachyOS's current stock config
+        -- (cachyos-hypr-noctalia) uses the same value.
+        vrr = 3,
     },
 
     render = {
-        -- 0 disable, 1 enable, 2 auto. CachyOS picks enable; auto is the safer
-        -- of the two on a hybrid NVIDIA laptop, where scanout has a history of
-        -- misbehaving. Drop to 0 if fullscreen games flicker or go black.
+        -- 0 disable, 1 enable, 2 auto. Auto is the safer choice on a hybrid
+        -- NVIDIA laptop, where scanout has a history of misbehaving, and it is
+        -- what CachyOS's stock config uses. Drop to 0 if fullscreen games
+        -- flicker or go black.
         direct_scanout = 2,
     },
 
