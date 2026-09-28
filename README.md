@@ -255,6 +255,43 @@ The NVIDIA driver and the kernel parameters are covered in [Installing CachyOS](
 - **A wallpaper.** `hyprpaper.conf` points at `~/Pictures/wallpapers/wallpaper.jpg`.
   Images are gitignored, so put your own there.
 
+### Boot menu colours
+
+The Limine menu uses the same palette: a `#0f0f0f` background, entries and key help in `#6e6e6e`, the countdown digit in `#e6e6e6`, and `#ff6b6b` only for errors in the entry editor. There is no wallpaper and no branding line.
+
+The colours are global options at the top of `/boot/limine.conf`, above the `comment: machine-id=` line. The CachyOS installer wrote them there once - diegons490's cachyos-limine-theme, with `/boot/limine-splash.png` as the wallpaper - and nothing on the system regenerates them. `limine-update` and limine-snapper-sync rewrite the boot entries below that line and carry everything above it over unchanged, so the file itself is the place to edit. `/etc/default/limine` holds only the kernel command line and the entry order; it has no theme options.
+
+Run `sudoedit /boot/limine.conf`, replace everything above `comment: machine-id=` with the block below and leave the rest alone, then run `sudo limine-update`. The option names are checked against the Limine 12.9 documentation.
+
+```
+timeout: 5
+default_entry: 2
+remember_last_entry: yes
+
+# Monochrome: bg 0f0f0f, muted 6e6e6e, text e6e6e6, ff6b6b for errors only.
+# Limine draws the selected entry in reverse video, so its bar is
+# term_foreground with the text cut out in term_background.
+term_palette: 0f0f0f;ff6b6b;6e6e6e;6e6e6e;6e6e6e;6e6e6e;6e6e6e;e6e6e6
+term_palette_bright: 2a2a2a;ff6b6b;e6e6e6;e6e6e6;e6e6e6;e6e6e6;e6e6e6;e6e6e6
+term_background: 000f0f0f
+term_foreground: 6e6e6e
+term_background_bright: 0f0f0f
+term_foreground_bright: e6e6e6
+interface_branding:
+interface_help_colour: 6e6e6e
+interface_help_colour_bright: e6e6e6
+```
+
+The menu has no accent. Limine draws the selected entry in reverse video: the bar takes `term_foreground` and the text is cut out of it in the background colour. The selection cannot have a colour of its own, so a purple bar would also make every other entry purple.
+
+To confirm the colours survived and the entries are intact:
+
+```bash
+sudo sh -c 'f=/boot/limine.conf; grep -nE "^(term_|interface_|wallpaper|backdrop)" $f; echo "cmdlines: $(grep -cE "^ *cmdline:" $f)  acpi_backlight=native: $(grep -cE "^ *cmdline:.*acpi_backlight=native" $f)  splash: $(grep -E "^ *cmdline:" $f | grep -cw splash)  snapshots: $(grep -cE "^ *///[0-9]+ " $f)"'
+```
+
+Every cmdline should carry `acpi_backlight=native` and none `splash`. The file with CachyOS's theme is kept at `/boot/limine.conf.bak-monochrome`; `/boot/limine-splash.png` is no longer used.
+
 ### Hibernation, if you want it later
 
 `hypridle` suspends after 15 minutes. A plain suspend keeps the disk encryption key in RAM, so it is not a defence against someone with physical access - only hibernation clears it. Making `systemctl suspend-then-hibernate` work needs swap at least as large as RAM, `resume=` in the Limine entry and, on btrfs over LUKS, a `resume_offset`. That is its own task and is deliberately left out of the initial setup. To switch over, change the 900s listener in `hypridle.conf` once hibernation is proven to work by hand.
