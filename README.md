@@ -46,7 +46,7 @@ What was done on this machine before any of the repository came into play.
 
 The CachyOS installer's Hyprland choice installs `hyprland`, `dolphin`, `kitty`, a login greeter and the `cachyos-hypr-noctalia` metapackage. That metapackage puts CachyOS's own setup into `/etc/skel`, so a fresh account already has a Lua config at `~/.config/hypr/hyprland.lua` (plus `config/*.lua` and `xdph.conf` next to it) and runs the noctalia shell for its bar, notifications, launcher and password prompts.
 
-**Stow will refuse to overwrite `~/.config/hypr/hyprland.lua`, or the `gtk.css` files in `~/.config/gtk-3.0` and `gtk-4.0`.** They are real files, not symlinks, so move them aside first. Leave `xdph.conf` where it is - it lets
+**Stow will refuse to overwrite `~/.config/hypr/hyprland.lua`, `~/.config/fish/config.fish`, or the `gtk.css` files in `~/.config/gtk-3.0` and `gtk-4.0`.** They are real files, not symlinks, so move them aside first. Leave `xdph.conf` where it is - it lets
 screen sharing remember a permission you already gave - and leave `config/` alone too; this `hyprland.lua` does not load it. Older installs that used the `cachyos-hyprland-settings` package also shipped `~/.config/waybar` and `~/.config/mako`; move those aside if they exist.
 
 **Rolling back means putting that file back.** `stow -D hypr` removes this config and the `.stock` copy goes back in its place. That only works before the [cleanup](#cleaning-up-the-stock-setup): it deletes the `.stock` copy and uninstalls noctalia, so afterwards there is no stock desktop to go back to. Do the cleanup last, once this config has proven itself.
@@ -63,7 +63,7 @@ Do this in order:
    ```bash
    mv ~/.config/hypr/hyprland.lua ~/.config/hypr/hyprland.lua.stock
    bash -c 'for d in waybar mako; do [ -e ~/.config/$d ] && mv ~/.config/$d ~/.config/$d.stock; done'
-   bash -c 'for f in ~/.config/gtk-3.0/gtk.css ~/.config/gtk-4.0/gtk.css; do [ -e $f ] && mv $f $f.stock; done'
+   bash -c 'for f in ~/.config/gtk-3.0/gtk.css ~/.config/gtk-4.0/gtk.css ~/.config/fish/config.fish; do [ -e $f ] && mv $f $f.stock; done'
    ```
    CachyOS's default shell is fish, which does not understand bash loops - hence the `bash -c` wrapper.
 4. Now stow:
@@ -71,12 +71,12 @@ Do this in order:
    git clone https://github.com/PeGoPaz/dotfiles.git ~/.dotfiles
    cd ~/.dotfiles
    stow hypr ghostty waybar fuzzel mako nvim
-   stow --no-folding gtk qt6ct kde
+   stow --no-folding gtk qt6ct kde fish
    ./apply-colours.sh
    ```
    The clone lives in `~/.dotfiles`, hidden like the configs it links; stow links into its parent directory, which is `~`.
 
-   The colour packages need `--no-folding`. Without it, stow links a whole directory if it does not exist yet - `~/.config/qt6ct`, say - and programs then save their own files into the repository: qt6ct its `qt6ct.conf`, GTK its `bookmarks`. `apply-colours.sh` handles the files that cannot be stowed at all, see [GTK and Qt colours](#gtk-and-qt-colours).
+   Those four packages need `--no-folding`. Without it, stow links a whole directory if it does not exist yet - `~/.config/qt6ct`, say - and programs then save their own files into the repository: qt6ct its `qt6ct.conf`, GTK its `bookmarks`, fish its `fish_variables`. `apply-colours.sh` handles the files that cannot be stowed at all, see [GTK and Qt colours](#gtk-and-qt-colours).
 5. Log out and back in, then run `~/.config/hypr/scripts/check.sh`.
 
 Until the [cleanup](#cleaning-up-the-stock-setup), the login screen is greetd running `noctalia-greeter`. It offers both "Hyprland" and "Hyprland (uwsm-managed)". This config works in either; the uwsm one also picks up CachyOS's `~/.config/uwsm/env`, which sets the cursor theme and Qt theming. The cleanup replaces the greeter with autologin into the uwsm session.
@@ -195,7 +195,7 @@ Here it is `greetd.service` running `noctalia-greeter`. greetd stays and the gre
 5. Delete what they left in `~/.config`, the CachyOS welcome screen's autostart entry, and the stock Hyprland config:
    ```bash
    rm -r ~/.config/{noctalia,alacritty,micro,xsettingsd} ~/.config/autostart/cachyos-hello.desktop
-   rm -r ~/.config/hypr/config ~/.config/hypr/hyprland.lua.stock
+   rm -r ~/.config/hypr/config ~/.config/hypr/hyprland.lua.stock ~/.config/fish/config.fish.stock
    ```
 6. Delete the colour files noctalia generated. After `apply-colours.sh` nothing reads them any more:
    ```bash
@@ -363,5 +363,6 @@ The lid is handled by systemd-logind, not by a Hyprland bind: logind suspends on
 - Ghostty is slightly translucent, `background-opacity = 0.9`.
 - The login is greetd autologin. In `/etc/greetd/config.toml`, `initial_session` runs `uwsm start -e -D Hyprland hyprland.desktop` as `vladr`, and `default_session` is `agreety --cmd start-hyprland`. noctalia-greeter was removed.
 - The default shell is fish. `EDITOR` and `VISUAL` are universal variables, set once with `set -Ux EDITOR nvim` and `set -Ux VISUAL nvim`, and bash loops in this README are wrapped in `bash -c`.
+- fish's `config.fish` is the `fish` package. It sources CachyOS's `/usr/share/cachyos-fish-config/cachyos-config.fish`, whose `fish_greeting` runs fastfetch in every new terminal, and then replaces that greeting with an empty one. `fish_variables` - where the universal variables live - is machine state that fish rewrites, so it is gitignored and never stowed.
 - Pushing goes through github-cli: run `gh auth login`, choose HTTPS, and answer yes to authenticating Git with your GitHub credentials. gh then serves as Git's credential helper, so `git push` needs no token by hand.
 - `nvim/.config/nvim/lazy-lock.json` is committed on purpose so plugin versions are reproducible on a fresh machine.

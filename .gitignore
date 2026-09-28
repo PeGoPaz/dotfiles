@@ -8,3 +8,7 @@ wallpapers/
 
 # macOS Finder metadata
 .DS_Store
+
+# fish rewrites this for every universal variable (EDITOR, VISUAL, ...); it is
+# machine state, not config
+fish_variables
