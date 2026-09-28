@@ -81,7 +81,6 @@ window#waybar #hyprland-workspaces button.visible label {
 
 /* Right modules */
 #mpris,
-#custom-gpu,
 #custom-profile {
     padding: 0 10px;
     background-color: transparent;

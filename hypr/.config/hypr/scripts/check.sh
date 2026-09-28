@@ -123,7 +123,7 @@ section "programs"
 missing=""
 for b in ghostty fuzzel mako dolphin firefox grim slurp cliphist wl-copy waybar \
          hyprsunset hypridle hyprpaper hyprlock brightnessctl playerctl \
-         pavucontrol notify-send asusctl supergfxctl nvim tree-sitter jq \
+         pavucontrol notify-send asusctl nvim tree-sitter jq \
          nmtui bluetoothctl; do
     need "$b" || missing="$missing $b"
 done
@@ -137,13 +137,6 @@ fi
 
 # --- asus layer ----------------------------------------------------------------
 section "asus"
-if need supergfxctl; then
-    out=$(supergfxctl -g 2>/dev/null) \
-        && pass "supergfxctl -g -> $out" \
-        || fail "supergfxctl -g failed - is supergfxd running?"
-else
-    fail "supergfxctl not installed"
-fi
 if need asusctl; then
     # asusctl 6.5 prints four lines here; only the first names the active profile.
     out=$(asusctl profile get 2>/dev/null | awk '/^Active profile/{print $NF}')
@@ -159,7 +152,6 @@ section "needs you"
 skip "launch a game: idle_inhibit holds the screen, immediate tears without artefacts"
 skip "leave it idle 15 minutes and confirm it suspends"
 skip "close the lid: it must lock, sleep, and wake to the lock screen"
-skip "switch supergfxctl Hybrid <-> Integrated; the session must come up in both"
 
 section "result"
 if [ "$fails" -eq 0 ]; then

@@ -11,7 +11,6 @@
     ],
     "modules-right": [
         "mpris",
-        "custom/gpu",
         "custom/profile",
         "bluetooth",
         "wireplumber",
@@ -51,12 +50,6 @@
         "format": "{title}",
         "max-length": 20,
         "ellipsis": "..."
-    },
-    "custom/gpu": {
-        "exec": "supergfxctl -g 2>/dev/null",
-        "interval": 30,
-        "format": "󰢮 {}",
-        "tooltip": false
     },
     "custom/profile": {
         "exec": "asusctl profile get 2>/dev/null | awk '/^Active profile/{print $NF}'",

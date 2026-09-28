@@ -28,10 +28,10 @@ local browser = "firefox"
 hl.env("XCURSOR_SIZE", "24")
 hl.env("HYPRCURSOR_SIZE", "24")
 
--- Hybrid GPU: Radeon 880M (iGPU) + RTX 5060 (dGPU), modes switched with
--- supergfxctl. Deliberately NOT setting AQ_DRM_DEVICES / WLR_DRM_DEVICES:
--- pinning the compositor to the nvidia node means the session refuses to
--- start once supergfxctl is switched to Integrated. LIBVA_DRIVER_NAME is
+-- Hybrid GPU: Radeon iGPU drives the panel, RTX 5060 wakes up for games.
+-- Deliberately NOT setting AQ_DRM_DEVICES / WLR_DRM_DEVICES: pinning the
+-- compositor to the nvidia node means the session refuses to start once the
+-- dGPU is disabled (asusctl armoury dgpu_disable). LIBVA_DRIVER_NAME is
 -- left unset for the same reason - a fixed value breaks on mode switch,
 -- libva picks the driver per device on its own.
 hl.env("NVD_BACKEND", "direct")

@@ -4,7 +4,7 @@ Monochrome Hyprland setup for an ASUS TUF A14 (FA401GM) running CachyOS.
 
 Off-black greyscale with a single purple accent.
 
-Hardware this is written for: Ryzen AI 9 465 with Radeon 880M (iGPU) plus NVIDIA
+Hardware this is written for: Ryzen AI 9 465 with its Radeon iGPU plus NVIDIA
 RTX 5060 (dGPU), a single internal panel `eDP-1` at 2560x1600@165, Limine as the bootloader. 
 
 ## Credits
@@ -16,7 +16,7 @@ No LICENSE file is included. The upstream project ships none, so its author reta
 
 ## Read this before you stow anything
 
-The CachyOS installer's Hyprland choice installs `hyprland`, `dolphin`, `kitty`, `sddm` and the `cachyos-hypr-noctalia` metapackage. That metapackage puts CachyOS's own setup into `/etc/skel`, so a fresh account already has a Lua config at `~/.config/hypr/hyprland.lua` (plus `config/*.lua` and `xdph.conf` next to it) and runs the noctalia shell for its bar, notifications, launcher and password prompts.
+The CachyOS installer's Hyprland choice installs `hyprland`, `dolphin`, `kitty`, a login greeter and the `cachyos-hypr-noctalia` metapackage. That metapackage puts CachyOS's own setup into `/etc/skel`, so a fresh account already has a Lua config at `~/.config/hypr/hyprland.lua` (plus `config/*.lua` and `xdph.conf` next to it) and runs the noctalia shell for its bar, notifications, launcher and password prompts.
 
 **Stow will refuse to overwrite `~/.config/hypr/hyprland.lua`.** It is a real file, not a symlink, so move that one file aside first. Leave `xdph.conf` where it is - it lets
 screen sharing remember a permission you already gave - and leave `config/` alone too; this `hyprland.lua` does not load it. Older installs that used the `cachyos-hyprland-settings` package also shipped `~/.config/waybar` and `~/.config/mako`; move those aside if they exist.
@@ -34,8 +34,9 @@ Do this in order:
 3. Move the colliding files aside:
    ```bash
    mv ~/.config/hypr/hyprland.lua ~/.config/hypr/hyprland.lua.stock
-   for d in waybar mako; do [ -e ~/.config/$d ] && mv ~/.config/$d ~/.config/$d.stock; done
+   bash -c 'for d in waybar mako; do [ -e ~/.config/$d ] && mv ~/.config/$d ~/.config/$d.stock; done'
    ```
+   CachyOS's default shell is fish, which does not understand bash loops - hence the `bash -c` wrapper.
 4. Now stow:
    ```bash
    git clone https://github.com/PeGoPaz/dotfiles.git ~/dotfiles
@@ -67,7 +68,7 @@ If an error is early enough that no keybind got registered, Hyprland also trips 
 | `SUPER + Q` | first known terminal | yes |
 
 `SUPER + Q` searches a hardcoded list - `kitty`, `alacritty`, `foot`, `wezterm`,
-`gnome-terminal`, `xterm` - which Ghostty is not on. kitty is first on it, and the CachyOS installer installs kitty explicitly, so the key opens a terminal. Keep kitty installed for exactly this reason. A TTY on `Ctrl+Alt+F2` is the other way out.
+`gnome-terminal`, `xterm` - which Ghostty is not on. kitty is first on it, and the CachyOS installer installs kitty explicitly, so the key opens a terminal. Keep kitty installed for exactly this reason. A TTY on `Fn + Ctrl + Alt + F2` is the other way out - on the A14 the top row is media keys by default, so plain `Ctrl + Alt + F2` changes the keyboard backlight instead.
 
 To put CachyOS's config back from a TTY:
 ```bash
@@ -94,7 +95,7 @@ What that checking cannot settle is anything that depends on the machine. These 
 |---|---|---|
 | `2560x1600@165` is accepted on `eDP-1` | `hyprctl monitors` | Edit the monitor block |
 | Keyboard backlight device `asus::kbd_backlight` | `brightnessctl -l` | One line in `hypridle.conf` |
-| Output shape of `supergfxctl -g` and `asusctl profile get` | Run them by hand | Waybar module shows empty |
+| Output shape of `asusctl profile get` | Run it by hand | Waybar profile module shows empty |
 | `immediate` tears cleanly on NVIDIA | Launch something from Steam | Drop the `immediate` rule |
 
 Checking names is not the same as proving the whole config loads. It has caught real breakages - hyprpaper's config format, three hyprlock keys that no longer exist, and `hyprctl dispatch dpms off` and `hyprctl keyword`, which stop working once Hyprland's config is Lua - but only a first boot proves the rest.
@@ -107,35 +108,36 @@ Run the script. It checks everything that can be checked automatically and exits
 ~/.config/hypr/scripts/check.sh
 ```
 
-It verifies the panel mode and scale, that the touchpad, layout and VRR options really took effect, that hyprpaper actually shows a wallpaper, that the keyboard backlight device matches what `hypridle.conf` names, that the polkit agent is running, that every program the configs call is installed, and that `supergfxctl` and `asusctl` answer.
+It verifies the panel mode and scale, that the touchpad, layout and VRR options really took effect, that hyprpaper actually shows a wallpaper, that the keyboard backlight device matches what `hypridle.conf` names, that the polkit agent is running, that every program the configs call is installed, and that `asusctl` answers.
 
-Four things it marks `SKIP`, because they need you:
+Three things it marks `SKIP`, because they need you:
 
 1. Launch a game from Steam - the screen must not blank, and tearing must have no artefacts. If it does, drop the `immediate` rule.
 2. Leave the laptop idle for 15 minutes and confirm it suspends.
 3. Close the lid - it must lock, sleep, and wake to the lock screen.
-4. Switch supergfxctl Hybrid to Integrated and back. The session must come up in both - that is the check that no GPU is pinned anywhere.
 
 Worth eyeballing too: `Alt+Shift` switches `us`/`ru`, and `hyprctl hyprsunset temperature` should match the time of day.
 
 ## Why the GPU is not pinned anywhere
 
-The A14 is a hybrid machine and modes are switched with supergfxctl. The config deliberately does **not** set `AQ_DRM_DEVICES`, `WLR_DRM_DEVICES` or `LIBVA_DRIVER_NAME`: pining the compositor to the NVIDIA node means the session refuses to start once supergfxctl is switched to Integrated, and a fixed VA-API driver breaks on every mode switch. Only mode-agnostic variables are set, and they are harmless when the dGPU is powered down.
+The A14 is a hybrid machine. In the default Hybrid mode the Radeon iGPU drives the panel and the RTX 5060 sleeps until a game asks for it (`prime-run`), so nothing needs switching day to day.
+
+If you ever do want Integrated-only or Ultimate mode, that goes through `asusctl armoury` (`dgpu_disable` and `gpu_mux_mode`, set as a pair, then reboot) or the GPU tab in `rog-control-center`. supergfxctl is not used: upstream has deprecated it, and it is no longer in the repositories.
+
+The config deliberately does **not** set `AQ_DRM_DEVICES`, `WLR_DRM_DEVICES` or `LIBVA_DRIVER_NAME`: pinning the compositor to the NVIDIA node means the session refuses to start once the dGPU is disabled, and a fixed VA-API driver breaks on every mode switch. Only mode-agnostic variables are set, and they are harmless when the dGPU is powered down.
 
 ## System-level steps that are not in this repository
 
 These live outside `$HOME` and need root, so they are instructions rather than files.
 
-- **`nvidia-open-dkms`.** The RTX 5060 is Blackwell and the proprietary kernel modules do not support that architecture at all. There is no choice here.
-- **Kernel parameter `nvidia_drm.fbdev=1`.** With Limine this goes in
-  `/etc/default/limine` followed by `limine-update`. On drivers 545 and newer
-  `nvidia_drm.modeset=1` is already the default and usually does not need adding.
+- **NVIDIA driver.** The CachyOS installer sets it up itself - open kernel modules (the only kind that supports Blackwell), prebuilt for its kernel. Confirm with `nvidia-smi`; do not add `nvidia-open-dkms` on top. No extra `nvidia_drm` parameters were needed.
+- **Kernel parameters - required on this laptop.** Both go into `KERNEL_CMDLINE[default]` in `/etc/default/limine`, followed by `sudo limine-update`:
+  - add `acpi_backlight=native` - without it the kernel hands the backlight to the NVIDIA driver, which has no wire to the panel, and the screen stays black after the disk password.
+  - remove `splash` - the Plymouth boot splash hangs instead of handing the screen over to the AMD driver. It only hides the boot log anyway.
 - **Packages.** All binary packages - nothing here is built from the AUR.
   ```
-  hyprland hyprpaper hypridle hyprlock hyprsunset hyprpolkitagent waybar ghostty fuzzel mako dolphin qt6ct firefox grim slurp cliphist wl-clipboard brightnessctl playerctl pavucontrol libnotify asusctl rog-control-center supergfxctl nvidia-prime ttf-jetbrains-mono-nerd neovim tree-sitter-cli gcc git ripgrep fd jq stow
+  hyprland hyprpaper hypridle hyprlock hyprsunset hyprpolkitagent waybar ghostty fuzzel mako dolphin qt6ct firefox grim slurp cliphist wl-clipboard brightnessctl playerctl pavucontrol libnotify asusctl rog-control-center nvidia-prime ttf-jetbrains-mono-nerd neovim tree-sitter-cli gcc git ripgrep fd jq stow
   ```
-  `supergfxctl` is not in the Arch repositories. It comes from CachyOS's own signed repository, which is enabled by default on CachyOS, so plain `pacman -S` finds it.
-  Worth knowing: upstream supergfxctl has not cut a release since mid-2025. That is a question of project activity, not of the package's integrity.
 
   Several of these back things the configs already reference: `pavucontrol` is the volume module's click action, `libnotify` provides the `notify-send` used by the screenshot script, `playerctl` drives the media keys, `hyprpolkitagent` is the password prompt, `dolphin` is `SUPER + E`, `qt6ct` themes Qt programs such as Dolphin, and `jq` is what `check.sh` reads the monitor with. The Waybar network and bluetooth modules open `nmtui` and `bluetoothctl`, which CachyOS already installs with NetworkManager and `bluez-utils`. `neovim` runs the LazyVim config; LazyVim needs `git` and a C compiler, its syntax highlighting needs `tree-sitter-cli`, and its file and text search use `fd` and `ripgrep`. `stow` and `git` are what installs this repository in the first place.
 - **A wallpaper.** `hyprpaper.conf` points at `~/Pictures/wallpapers/wallpaper.jpg`.
