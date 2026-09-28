@@ -74,7 +74,7 @@ Do this in order:
    The clone lives in `~/.dotfiles`, hidden like the configs it links; stow links into its parent directory, which is `~`.
 5. Log out and back in, then run `~/.config/hypr/scripts/check.sh`.
 
-The login screen is greetd running `noctalia-greeter`. It offers both "Hyprland" and "Hyprland (uwsm-managed)". This config works in either; the uwsm one also picks up CachyOS's `~/.config/uwsm/env`, which sets the cursor theme and Qt theming.
+Until the [cleanup](#cleaning-up-the-stock-setup), the login screen is greetd running `noctalia-greeter`. It offers both "Hyprland" and "Hyprland (uwsm-managed)". This config works in either; the uwsm one also picks up CachyOS's `~/.config/uwsm/env`, which sets the cursor theme and Qt theming. The cleanup replaces the greeter with autologin into the uwsm session.
 
 ### What this config takes over from CachyOS
 
@@ -153,27 +153,41 @@ Worth eyeballing too: `Alt+Shift` switches `us`/`ru`, and `hyprctl hyprsunset te
 
 Once the checklist passes, CachyOS's own shell and the programs that came with it can go. After this, rolling back to the stock desktop is no longer possible.
 
-First check what runs the login screen, because that part stays:
+First check what runs the login screen:
 
 ```bash
 systemctl status display-manager
 ```
 
-Here it is `greetd.service` running `noctalia-greeter`. The greeter is its own package, explicitly installed, and it does not depend on the noctalia shell - noctalia is only an optional dependency of it - so the login screen keeps working without noctalia.
+Here it is `greetd.service` running `noctalia-greeter`. greetd stays and the greeter goes: greetd logs straight into Hyprland instead, and after a logout its own text greeter, `agreety` from `greetd-agreety`, takes over.
 
-1. Mark everything that stays as explicitly installed, so `-Rns` cannot take it along as an unneeded dependency:
-   ```bash
-   sudo pacman -D --asexplicit hyprland kitty uwsm greetd noctalia-greeter kde-cli-tools qview swash adw-gtk-theme python gnome-keyring noto-fonts noto-fonts-emoji xdg-desktop-portal-hyprland hyprpaper hypridle hyprlock hyprsunset hyprpolkitagent waybar ghostty fuzzel mako dolphin qt6ct firefox grim slurp cliphist wl-clipboard brightnessctl playerctl pavucontrol libnotify asusctl rog-control-center nvidia-prime ttf-jetbrains-mono-nerd neovim tree-sitter-cli gcc git ripgrep fd jq stow github-cli curl
+1. Point greetd away from `noctalia-greeter` **before** removing it - until then greetd still starts `noctalia-greeter-session`, and once that is gone there is no login screen. Run `sudoedit /etc/greetd/config.toml` and make it read:
+   ```toml
+   [terminal]
+   vt = 1
+
+   [initial_session]
+   command = "uwsm start -e -D Hyprland hyprland.desktop"
+   user = "vladr"
+
+   [default_session]
+   command = "agreety --cmd start-hyprland"
+   user = "greeter"
    ```
-2. Remove noctalia, its metapackage and the stock programs this setup does not use:
+   `initial_session` runs once per boot. After a logout greetd falls back to `default_session`, which asks for a user name and password on the console and starts Hyprland through `start-hyprland`, not through uwsm.
+2. Mark everything that stays as explicitly installed, so `-Rns` cannot take it along as an unneeded dependency:
    ```bash
-   sudo pacman -Rns cachyos-hypr-noctalia noctalia cachyos-alacritty-config awesome-terminal-fonts xorg-xhost ddcutil gnome-text-editor gnome-calculator nwg-look hyprpicker
+   sudo pacman -D --asexplicit hyprland kitty uwsm greetd greetd-agreety kde-cli-tools qview swash adw-gtk-theme python gnome-keyring noto-fonts noto-fonts-emoji xdg-desktop-portal-hyprland hyprpaper hypridle hyprlock hyprsunset hyprpolkitagent waybar ghostty fuzzel mako dolphin qt6ct firefox grim slurp cliphist wl-clipboard brightnessctl playerctl pavucontrol libnotify asusctl rog-control-center nvidia-prime ttf-jetbrains-mono-nerd neovim tree-sitter-cli gcc git ripgrep fd jq stow github-cli curl
    ```
-3. Remove the stock terminal and editor - Ghostty and Neovim replace them:
+3. Remove noctalia, its metapackage, its greeter and the stock programs this setup does not use:
+   ```bash
+   sudo pacman -Rns cachyos-hypr-noctalia noctalia noctalia-greeter cachyos-alacritty-config awesome-terminal-fonts xorg-xhost ddcutil gnome-text-editor gnome-calculator nwg-look hyprpicker
+   ```
+4. Remove the stock terminal and editor - Ghostty and Neovim replace them:
    ```bash
    sudo pacman -Rns alacritty micro cachyos-micro-settings
    ```
-4. Delete what they left in `~/.config`, the CachyOS welcome screen's autostart entry, and the stock Hyprland config:
+5. Delete what they left in `~/.config`, the CachyOS welcome screen's autostart entry, and the stock Hyprland config:
    ```bash
    rm -r ~/.config/{noctalia,alacritty,micro,xsettingsd} ~/.config/autostart/cachyos-hello.desktop
    rm -r ~/.config/hypr/config ~/.config/hypr/hyprland.lua.stock
