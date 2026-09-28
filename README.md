@@ -155,7 +155,7 @@ Three things it marks `SKIP`, because they need you:
 2. Leave the laptop idle for 15 minutes and confirm it suspends.
 3. Close the lid - it must lock, sleep, and wake to the lock screen.
 
-Worth eyeballing too: `Alt+Shift` switches `us`/`ru`, and `hyprctl hyprsunset temperature` should match the time of day.
+Worth eyeballing too: `Alt+Space` switches `us`/`ru`, and `hyprctl hyprsunset temperature` should match the time of day.
 
 ## Cleaning up the stock setup
 
