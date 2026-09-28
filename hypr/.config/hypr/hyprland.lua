@@ -193,8 +193,8 @@ hl.bind(mainMod .. " + P",            hl.dsp.window.pseudo()) -- dwindle
 -- Not bound, but available if you want it: hl.dsp.layout("togglesplit")
 hl.bind(mainMod .. " + L",            hl.dsp.exec_cmd("hyprlock"))
 
--- Reload Waybar with Super + Shift + W
-hl.bind(mainMod .. " + SHIFT + W",    hl.dsp.exec_cmd("killall -SIGUSR2 waybar"))
+-- Restart Waybar with Super + Shift + W
+hl.bind(mainMod .. " + SHIFT + W",    hl.dsp.exec_cmd("systemctl --user restart waybar"))
 
 -- Power Menu (Super + Backspace)
 hl.bind(mainMod .. " + Backspace",    hl.dsp.exec_cmd("~/.config/hypr/scripts/powermenu.sh"))
@@ -328,9 +328,10 @@ hl.window_rule({
 -- agent is not: in CachyOS's stock setup the noctalia shell is the agent, and
 -- this config does not run noctalia, so without this line nothing would ask
 -- for a password when a graphical program needs admin rights.
+-- Waybar is not started here: it runs as the systemd user unit waybar.service,
+-- which restarts it after a crash.
 hl.on("hyprland.start", function()
     hl.exec_cmd("/usr/lib/hyprpolkitagent/hyprpolkitagent")
-    hl.exec_cmd("waybar")
     hl.exec_cmd("mako")
     hl.exec_cmd("hyprpaper")
     hl.exec_cmd("hypridle")

@@ -73,13 +73,16 @@ Do this in order:
    stow hypr ghostty waybar fuzzel mako nvim
    stow --no-folding gtk qt6ct kde fish
    ./apply-colours.sh
+   systemctl --user enable waybar.service
    ```
    The clone lives in `~/.dotfiles`, hidden like the configs it links; stow links into its parent directory, which is `~`.
 
    Those four packages need `--no-folding`. Without it, stow links a whole directory if it does not exist yet - `~/.config/qt6ct`, say - and programs then save their own files into the repository: qt6ct its `qt6ct.conf`, GTK its `bookmarks`, fish its `fish_variables`. `apply-colours.sh` handles the files that cannot be stowed at all, see [GTK and Qt colours](#gtk-and-qt-colours).
+
+   Waybar is not in Hyprland's autostart; it runs as the `waybar.service` user unit that the package ships, and `enable` hooks it to the session. See [Notes](#notes).
 5. Log out and back in, then run `~/.config/hypr/scripts/check.sh`.
 
-Until the [cleanup](#cleaning-up-the-stock-setup), the login screen is greetd running `noctalia-greeter`. It offers both "Hyprland" and "Hyprland (uwsm-managed)". This config works in either; the uwsm one also picks up CachyOS's `~/.config/uwsm/env`, which sets the cursor theme and Qt theming. The cleanup replaces the greeter with autologin into the uwsm session.
+Until the [cleanup](#cleaning-up-the-stock-setup), the login screen is greetd running `noctalia-greeter`. It offers both "Hyprland" and "Hyprland (uwsm-managed)". This config works in either, but only the uwsm one has a bar, since Waybar starts with the uwsm session. The uwsm one also picks up CachyOS's `~/.config/uwsm/env`, which sets the cursor theme and Qt theming. The cleanup replaces the greeter with autologin into the uwsm session.
 
 ### What this config takes over from CachyOS
 
@@ -313,7 +316,7 @@ Every cmdline should carry `acpi_backlight=native` and none `splash`. The file w
 | `SUPER + Backspace` | power menu - lock, logout, suspend, reboot, shutdown |
 | `Print` | screenshot - asks region or full screen, saves it to `~/Pictures/screenshots` and copies it too |
 | `SUPER + Shift + P` | the same screenshot - the A14 has no `Print` key |
-| `SUPER + Shift + W` | reload Waybar |
+| `SUPER + Shift + W` | restart Waybar - `systemctl --user restart waybar` |
 
 **Windows**
 
@@ -360,6 +363,9 @@ The lid is handled by systemd-logind, not by a Hyprland bind: logind suspends on
 - Clicking the network icon opens `nmtui` and the bluetooth icon opens `bluetoothctl`, both in Ghostty. Neither needs an extra package.
 - Waybar shows CPU load, CPU temperature, memory and, on battery, the power draw next to the charge. The temperature is the CPU's `k10temp` sensor, found through `hwmon-path-abs` so a changed `hwmonN` number does not break it, and it turns red from 95°. There is no NVIDIA temperature on purpose: polling `nvidia-smi` wakes the dGPU and costs battery.
 - Waybar has no persistent workspaces any more - only occupied ones show.
+- Waybar runs as the systemd user unit `waybar.service` from the waybar package, enabled once with `systemctl --user enable waybar.service`, not from Hyprland's autostart. The unit starts with `graphical-session.target` and has `Restart=on-failure`, so a crashed bar comes back by itself. Its output and crash messages go to the journal: `journalctl --user -u waybar`.
+- Only the uwsm session reaches `graphical-session.target`. The fallback session after a logout - `agreety` starting `start-hyprland` - is not uwsm, so it has no bar. That is accepted: it is only there for getting back in.
+- Restarting or crash-restarting Waybar also closes whatever was opened by clicking it - pavucontrol, the `nmtui` and `bluetoothctl` terminals - because those run inside the Waybar unit and systemd stops the whole unit.
 - Ghostty is slightly translucent, `background-opacity = 0.9`.
 - The login is greetd autologin. In `/etc/greetd/config.toml`, `initial_session` runs `uwsm start -e -D Hyprland hyprland.desktop` as `vladr`, and `default_session` is `agreety --cmd start-hyprland`. noctalia-greeter was removed.
 - The default shell is fish. `EDITOR` and `VISUAL` are universal variables, set once with `set -Ux EDITOR nvim` and `set -Ux VISUAL nvim`, and bash loops in this README are wrapped in `bash -c`.
