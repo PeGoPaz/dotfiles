@@ -1,0 +1,104 @@
+/* Monochrome: bg #0f0f0f, surface #1a1a1a, border #2a2a2a, muted #6e6e6e,
+   text #e6e6e6. Accent #c678dd marks focus and selection only. #ff6b6b is for
+   errors only.
+
+   GTK 4 programs build their widgets from these variables: libadwaita programs
+   through libadwaita's own stylesheet, the rest (pavucontrol) through the
+   adw-gtk3-dark theme, which copies libadwaita's. */
+
+:root {
+    --accent-color: #c678dd;
+    --accent-bg-color: #c678dd;
+    --accent-fg-color: #0f0f0f;
+
+    --destructive-color: #ff6b6b;
+    --destructive-bg-color: #ff6b6b;
+    --destructive-fg-color: #0f0f0f;
+
+    --error-color: #ff6b6b;
+    --error-bg-color: #ff6b6b;
+    --error-fg-color: #0f0f0f;
+
+    --warning-color: #e6e6e6;
+    --warning-bg-color: #2a2a2a;
+    --warning-fg-color: #e6e6e6;
+
+    --success-color: #e6e6e6;
+    --success-bg-color: #2a2a2a;
+    --success-fg-color: #e6e6e6;
+
+    --window-bg-color: #0f0f0f;
+    --window-fg-color: #e6e6e6;
+
+    --view-bg-color: #0f0f0f;
+    --view-fg-color: #e6e6e6;
+
+    --headerbar-bg-color: #1a1a1a;
+    --headerbar-fg-color: #e6e6e6;
+    --headerbar-border-color: #2a2a2a;
+    --headerbar-backdrop-color: #0f0f0f;
+    --headerbar-shade-color: rgba(15, 15, 15, 0.36);
+    --headerbar-darker-shade-color: rgba(15, 15, 15, 0.9);
+
+    --sidebar-bg-color: #1a1a1a;
+    --sidebar-fg-color: #e6e6e6;
+    --sidebar-backdrop-color: #1a1a1a;
+    --sidebar-border-color: #2a2a2a;
+    --sidebar-shade-color: rgba(15, 15, 15, 0.25);
+
+    --secondary-sidebar-bg-color: #0f0f0f;
+    --secondary-sidebar-fg-color: #e6e6e6;
+    --secondary-sidebar-backdrop-color: #0f0f0f;
+    --secondary-sidebar-border-color: #2a2a2a;
+    --secondary-sidebar-shade-color: rgba(15, 15, 15, 0.25);
+
+    --card-bg-color: #1a1a1a;
+    --card-fg-color: #e6e6e6;
+    --card-shade-color: rgba(15, 15, 15, 0.36);
+
+    --thumbnail-bg-color: #1a1a1a;
+    --thumbnail-fg-color: #e6e6e6;
+
+    --dialog-bg-color: #1a1a1a;
+    --dialog-fg-color: #e6e6e6;
+
+    --popover-bg-color: #1a1a1a;
+    --popover-fg-color: #e6e6e6;
+    --popover-shade-color: rgba(15, 15, 15, 0.25);
+
+    --overview-bg-color: #0f0f0f;
+    --overview-fg-color: #e6e6e6;
+
+    --active-toggle-bg-color: #2a2a2a;
+    --active-toggle-fg-color: #e6e6e6;
+
+    --shade-color: rgba(15, 15, 15, 0.25);
+    --scrollbar-outline-color: #0f0f0f;
+    --border-color: #2a2a2a;
+}
+
+/* The "suggested" button of a dialog (Open, Save), links and the filled part
+   of sliders and progress bars would be painted in the accent too. None of
+   them is focus or selection, so they stay grey. Their focus ring still uses
+   --accent-color. */
+.suggested-action {
+    --accent-bg-color: #2a2a2a;
+    --accent-fg-color: #e6e6e6;
+}
+
+scale,
+progressbar,
+levelbar {
+    --accent-bg-color: #6e6e6e;
+    --accent-fg-color: #0f0f0f;
+}
+
+link,
+button.link {
+    color: #e6e6e6;
+}
+
+link:visited,
+button.link:visited {
+    color: #6e6e6e;
+}

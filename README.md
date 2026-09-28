@@ -46,7 +46,7 @@ What was done on this machine before any of the repository came into play.
 
 The CachyOS installer's Hyprland choice installs `hyprland`, `dolphin`, `kitty`, a login greeter and the `cachyos-hypr-noctalia` metapackage. That metapackage puts CachyOS's own setup into `/etc/skel`, so a fresh account already has a Lua config at `~/.config/hypr/hyprland.lua` (plus `config/*.lua` and `xdph.conf` next to it) and runs the noctalia shell for its bar, notifications, launcher and password prompts.
 
-**Stow will refuse to overwrite `~/.config/hypr/hyprland.lua`.** It is a real file, not a symlink, so move that one file aside first. Leave `xdph.conf` where it is - it lets
+**Stow will refuse to overwrite `~/.config/hypr/hyprland.lua`, or the `gtk.css` files in `~/.config/gtk-3.0` and `gtk-4.0`.** They are real files, not symlinks, so move them aside first. Leave `xdph.conf` where it is - it lets
 screen sharing remember a permission you already gave - and leave `config/` alone too; this `hyprland.lua` does not load it. Older installs that used the `cachyos-hyprland-settings` package also shipped `~/.config/waybar` and `~/.config/mako`; move those aside if they exist.
 
 **Rolling back means putting that file back.** `stow -D hypr` removes this config and the `.stock` copy goes back in its place. That only works before the [cleanup](#cleaning-up-the-stock-setup): it deletes the `.stock` copy and uninstalls noctalia, so afterwards there is no stock desktop to go back to. Do the cleanup last, once this config has proven itself.
@@ -63,6 +63,7 @@ Do this in order:
    ```bash
    mv ~/.config/hypr/hyprland.lua ~/.config/hypr/hyprland.lua.stock
    bash -c 'for d in waybar mako; do [ -e ~/.config/$d ] && mv ~/.config/$d ~/.config/$d.stock; done'
+   bash -c 'for f in ~/.config/gtk-3.0/gtk.css ~/.config/gtk-4.0/gtk.css; do [ -e $f ] && mv $f $f.stock; done'
    ```
    CachyOS's default shell is fish, which does not understand bash loops - hence the `bash -c` wrapper.
 4. Now stow:
@@ -70,8 +71,12 @@ Do this in order:
    git clone https://github.com/PeGoPaz/dotfiles.git ~/.dotfiles
    cd ~/.dotfiles
    stow hypr ghostty waybar fuzzel mako nvim
+   stow --no-folding gtk qt6ct kde
+   ./apply-colours.sh
    ```
    The clone lives in `~/.dotfiles`, hidden like the configs it links; stow links into its parent directory, which is `~`.
+
+   The colour packages need `--no-folding`. Without it, stow links a whole directory if it does not exist yet - `~/.config/qt6ct`, say - and programs then save their own files into the repository: qt6ct its `qt6ct.conf`, GTK its `bookmarks`. `apply-colours.sh` handles the files that cannot be stowed at all, see [GTK and Qt colours](#gtk-and-qt-colours).
 5. Log out and back in, then run `~/.config/hypr/scripts/check.sh`.
 
 Until the [cleanup](#cleaning-up-the-stock-setup), the login screen is greetd running `noctalia-greeter`. It offers both "Hyprland" and "Hyprland (uwsm-managed)". This config works in either; the uwsm one also picks up CachyOS's `~/.config/uwsm/env`, which sets the cursor theme and Qt theming. The cleanup replaces the greeter with autologin into the uwsm session.
@@ -82,7 +87,7 @@ Replacing CachyOS's `hyprland.lua` drops everything it set. The two settings wor
 
 noctalia is not started - after the cleanup it is not installed either - and everything it did has a replacement here: the bar is Waybar, notifications are mako, the launcher is fuzzel, the lock screen is hyprlock, wallpaper is hyprpaper, and the password prompt for graphical programs is `hyprpolkitagent`, started from this config's autostart.
 
-`QT_QPA_PLATFORMTHEME=qt6ct` is set here as well, so Qt programs such as Dolphin look the same in both login sessions. The colours they use are the ones noctalia generated on the first stock boot, from CachyOS's default wallpaper; they stay after noctalia is gone.
+`QT_QPA_PLATFORMTHEME=qt6ct` is set here as well, so Qt programs such as Dolphin look the same in both login sessions. noctalia generated their colours on the first stock boot; this repository replaces those, see [GTK and Qt colours](#gtk-and-qt-colours).
 
 ### If the config has errors
 
@@ -192,8 +197,40 @@ Here it is `greetd.service` running `noctalia-greeter`. greetd stays and the gre
    rm -r ~/.config/{noctalia,alacritty,micro,xsettingsd} ~/.config/autostart/cachyos-hello.desktop
    rm -r ~/.config/hypr/config ~/.config/hypr/hyprland.lua.stock
    ```
+6. Delete the colour files noctalia generated. After `apply-colours.sh` nothing reads them any more:
+   ```bash
+   rm ~/.config/gtk-{3,4}.0/noctalia.css ~/.config/gtk-{3,4}.0/gtk.css.stock ~/.config/qt6ct/colors/noctalia.conf ~/.local/share/color-schemes/noctalia.colors ~/.config/btop/themes/noctalia.theme
+   rm -r ~/.config/qt5ct
+   ```
+   `~/.config/qt5ct` holds only another copy of the Qt colours; qt5ct is not installed. kitty's `themes/noctalia.conf` stays: kitty is only the emergency terminal and is left as it came.
 
-The colours noctalia generated are not lost with `~/.config/noctalia`: it wrote copies into `~/.config/gtk-3.0`, `gtk-4.0`, `qt6ct`, `kitty`, `btop` and `kdeglobals`, and those stay.
+## GTK and Qt colours
+
+GTK and Qt programs use the same palette as the bar and the notifications: bg `#0f0f0f`, surface `#1a1a1a`, border `#2a2a2a`, muted `#6e6e6e`, text `#e6e6e6`. The accent `#c678dd` marks focus and selection only, and `#ff6b6b` marks errors only.
+
+| Package | File | Used by |
+|---|---|---|
+| `gtk` | `~/.config/gtk-3.0/gtk.css` | GTK 3 programs - Firefox and its file dialog. They keep the adw-gtk3-dark theme; the file replaces its named colours. |
+| `gtk` | `~/.config/gtk-4.0/gtk.css` | GTK 4 programs - pavucontrol through adw-gtk3-dark, libadwaita programs through libadwaita. The file replaces their colour variables. |
+| `qt6ct` | `~/.config/qt6ct/colors/monochrome.conf` | Qt programs, through qt6ct |
+| `kde` | `~/.local/share/color-schemes/Monochrome.colors` | KDE programs - Dolphin |
+
+**`kdeglobals` and `qt6ct.conf` are not stowed.** KDE programs and the qt6ct window save them by writing a new file and renaming it over the old one, which replaces a stow symlink with a plain file and silently cuts it loose from the repository. `apply-colours.sh` edits them in place instead:
+
+- `kdeglobals` gets the colour groups of `Monochrome.colors`, and `ColorScheme=Monochrome`.
+- `qt6ct.conf` gets `color_scheme_path` pointing at `monochrome.conf`, and `custom_palette=true`.
+- `dolphinrc` gets `ColorScheme=Monochrome` under `[UiSettings]`. Dolphin applies a scheme of its own on top of qt6ct; with none set, outside Plasma it picks Breeze or Breeze Dark.
+- `btop.conf` gets `color_theme = "greyscale"`, a theme that ships with btop. btop saves its settings when it quits, so quit it before running the script.
+
+Run the script again after changing a colour scheme, then restart the programs - none of them reload colours while running. `stow -D gtk qt6ct kde` does not undo what the script wrote.
+
+Where the palette cannot be kept exactly:
+
+- adw-gtk3 and libadwaita also paint the dialog's suggested button (Open, Save), links, and slider and progress bar fills in the accent. `gtk.css` turns those grey. What is left of the accent in GTK is selection, focus rings, checked switches and boxes, and the current tab's underline.
+- Qt has one colour for selection and for progress bar and slider fills, so in Qt programs those fills stay purple. KDE also tints breeze folder icons with the selection colour, so Dolphin's folders are purple.
+- Dolphin writes selected file names in the normal text colour, relying on a style that draws a translucent selection. Fusion draws it solid, so selected names are `#e6e6e6` on `#c678dd`.
+- Themes shade buttons, hover states and outlines by mixing palette colours: translucent text colour in GTK, a darkened window colour in Qt's Fusion. KDE fades disabled text towards its background, which lands exactly on `#6e6e6e` over `#0f0f0f` and a little lighter on buttons. These come out as greys between the palette steps.
+- Icons keep their own colours: the GTK file dialog shows Adwaita's blue folders, pavucontrol a green tick.
 
 ## Why the GPU is not pinned anywhere
 
