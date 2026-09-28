@@ -11,13 +11,10 @@
     ],
     "modules-right": [
         "mpris",
-        "cpu",
-        "temperature",
-        "memory",
-        "custom/profile",
-        "bluetooth",
+        "group/stats",
         "wireplumber",
         "network",
+        "bluetooth",
         "battery",
         "group/tray-group",
         "clock"
@@ -54,6 +51,14 @@
         "max-length": 20,
         "ellipsis": "..."
     },
+    "group/stats": {
+        "orientation": "horizontal",
+        "modules": [
+            "cpu",
+            "temperature",
+            "memory"
+        ]
+    },
     "cpu": {
         "interval": 5,
         "format": "󰻠 {usage}%",
@@ -64,27 +69,21 @@
         "input-filename": "temp1_input",
         "critical-threshold": 95,
         "interval": 5,
-        "format": "󰔏 {temperatureC}°",
-        "tooltip": false
+        "format": "{temperatureC}°",
+        "tooltip-format": "CPU {temperatureC}°C"
     },
     "memory": {
         "interval": 10,
-        "format": "󰍛 {percentage}%",
-        "tooltip-format": "{used:0.1f} / {total:0.1f} GiB"
-    },
-    "custom/profile": {
-        "exec": "asusctl profile get 2>/dev/null | awk '/^Active profile/{print $NF}'",
-        "interval": 30,
-        "format": "󰓅 {}",
-        "on-click": "asusctl profile next",
-        "tooltip": false
+        "format": "{percentage}%",
+        "tooltip-format": "RAM {used:0.1f} / {total:0.1f} GiB"
     },
     "bluetooth": {
-        "format": "󰂯",
-        "format-off": "󰂲",
-        "format-disabled": "󰂲",
+        "format": "",
+        "format-on": "",
+        "format-off": "",
+        "format-disabled": "",
+        "format-no-controller": "",
         "format-connected": "󰂱",
-        "tooltip-format": "{controller_alias}",
         "tooltip-format-connected": "{device_enumerate}",
         "on-click": "ghostty -e bluetoothctl"
     },
@@ -113,14 +112,14 @@
             "critical": 12
         },
         "format": "{capacity}%",
-        "format-charging": "",
-        "format-plugged": "",
-        "format-full": "",
-        "format-discharging": "{capacity}% {power:.1f}W",
         "tooltip-format": "{time} ({capacity}%)"
     },
     "clock": {
-        "format": "{:%H:%M  %Y-%m-%d}",
-        "tooltip-format": "<big>{:%Y %B}</big>\n<tt>{calendar}</tt>"
+        "format": "{:%a %d %b  %H:%M}",
+        "locale": "en_IE.UTF-8",
+        "tooltip-format": "<big>{:%d/%m/%Y}</big>\n<tt><small>{calendar}</small></tt>",
+        "calendar": {
+            "mode": "month"
+        }
     }
 }

@@ -80,14 +80,27 @@ window#waybar #hyprland-workspaces button.visible label {
 }
 
 /* Right modules */
-#mpris,
-#cpu,
-#temperature,
-#memory,
-#custom-profile {
+#mpris {
     padding: 0 10px;
     background-color: transparent;
     color: #6e6e6e;
+}
+
+/* Load: one icon, three numbers, muted - cpu%, temp, ram% */
+#cpu,
+#temperature,
+#memory {
+    padding: 0 0 0 6px;
+    background-color: transparent;
+    color: #6e6e6e;
+}
+
+#cpu {
+    padding-left: 10px;
+}
+
+#memory {
+    padding-right: 10px;
 }
 
 #wireplumber {
