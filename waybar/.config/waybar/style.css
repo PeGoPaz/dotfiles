@@ -81,6 +81,9 @@ window#waybar #hyprland-workspaces button.visible label {
 
 /* Right modules */
 #mpris,
+#cpu,
+#temperature,
+#memory,
 #custom-profile {
     padding: 0 10px;
     background-color: transparent;
@@ -121,6 +124,7 @@ window#waybar #hyprland-workspaces button.visible label {
 }
 
 /* The only red in the bar */
-#battery.critical {
+#battery.critical,
+#temperature.critical {
     color: #ff6b6b;
 }

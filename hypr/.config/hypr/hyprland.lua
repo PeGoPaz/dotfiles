@@ -250,6 +250,7 @@ hl.bind("XF86MonBrightnessDown",      hl.dsp.exec_cmd("brightnessctl -e4 -n2 set
 
 -- Screenshot (Print Screen)
 hl.bind("Print",                      hl.dsp.exec_cmd("~/.config/hypr/scripts/screenshot.sh"))
+hl.bind(mainMod .. " + SHIFT + P",    hl.dsp.exec_cmd("~/.config/hypr/scripts/screenshot.sh"))
 
 -- Requires playerctl
 hl.bind("XF86AudioNext",              hl.dsp.exec_cmd("playerctl next"),        { locked = true })
