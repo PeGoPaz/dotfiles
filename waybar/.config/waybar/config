@@ -28,7 +28,10 @@
             "transition-duration": 300,
             "transition-left-to-right": false
         },
-        "modules": ["custom/tray-icon", "tray"]
+        "modules": [
+            "custom/tray-icon",
+            "tray"
+        ]
     },
     "custom/tray-icon": {
         "format": "󰀻",
@@ -40,10 +43,7 @@
     },
     "hyprland/workspaces": {
         "all-outputs": true,
-        "format": "{name}",
-        "persistent-workspaces": {
-            "*": 6
-        }
+        "format": "{name}"
     },
     "hyprland/window": {
         "max-length": 50,
