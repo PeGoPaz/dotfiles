@@ -365,7 +365,7 @@ The lid is handled by systemd-logind, not by a Hyprland bind: logind suspends on
 - Waybar has no persistent workspaces any more - only occupied ones show.
 - Waybar runs as the systemd user unit `waybar.service` from the waybar package, enabled once with `systemctl --user enable waybar.service`, not from Hyprland's autostart. The unit starts with `graphical-session.target` and has `Restart=on-failure`, so a crashed bar comes back by itself. Its output and crash messages go to the journal: `journalctl --user -u waybar`.
 - Only the uwsm session reaches `graphical-session.target`. The fallback session after a logout - `agreety` starting `start-hyprland` - is not uwsm, so it has no bar. That is accepted: it is only there for getting back in.
-- Restarting or crash-restarting Waybar also closes whatever was opened by clicking it - pavucontrol, the `nmtui` and `bluetoothctl` terminals - because those run inside the Waybar unit and systemd stops the whole unit.
+- Waybar's click actions start their programs through `uwsm app --`, so pavucontrol and the `nmtui` and `bluetoothctl` terminals run as units of their own. Started directly they would sit inside the Waybar unit, and restarting the bar - by hand or after a crash - would close them with it.
 - Ghostty is slightly translucent, `background-opacity = 0.9`.
 - The login is greetd autologin. In `/etc/greetd/config.toml`, `initial_session` runs `uwsm start -e -D Hyprland hyprland.desktop` as `vladr`, and `default_session` is `agreety --cmd start-hyprland`. noctalia-greeter was removed.
 - The default shell is fish. `EDITOR` and `VISUAL` are universal variables, set once with `set -Ux EDITOR nvim` and `set -Ux VISUAL nvim`, and bash loops in this README are wrapped in `bash -c`.
