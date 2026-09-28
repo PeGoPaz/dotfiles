@@ -233,6 +233,7 @@ The NVIDIA driver and the kernel parameters are covered in [Installing CachyOS](
 |---|---|
 | `SUPER + Q` | close window |
 | `SUPER + W` | toggle floating |
+| `SUPER + F` | toggle fullscreen |
 | `SUPER + P` | pseudotile - keeps its own size inside its tile |
 | `SUPER + arrows` | move focus left, right, up, down |
 | `SUPER + left drag` | move window |
@@ -270,7 +271,9 @@ The lid is handled by systemd-logind, not by a Hyprland bind: logind suspends on
 
 - Clicking the network icon opens `nmtui` and the bluetooth icon opens `bluetoothctl`, both in Ghostty. Neither needs an extra package.
 - Waybar shows CPU load, CPU temperature, memory and, on battery, the power draw next to the charge. The temperature is the CPU's `k10temp` sensor, found through `hwmon-path-abs` so a changed `hwmonN` number does not break it, and it turns red from 95°. There is no NVIDIA temperature on purpose: polling `nvidia-smi` wakes the dGPU and costs battery.
+- Waybar has no persistent workspaces any more - only occupied ones show.
 - Ghostty is slightly translucent, `background-opacity = 0.9`.
+- The login is greetd autologin. In `/etc/greetd/config.toml`, `initial_session` runs `uwsm start -e -D Hyprland hyprland.desktop` as `vladr`, and `default_session` is `agreety --cmd start-hyprland`. noctalia-greeter was removed.
 - The default shell is fish. `EDITOR` and `VISUAL` are universal variables, set once with `set -Ux EDITOR nvim` and `set -Ux VISUAL nvim`, and bash loops in this README are wrapped in `bash -c`.
 - Pushing goes through github-cli: run `gh auth login`, choose HTTPS, and answer yes to authenticating Git with your GitHub credentials. gh then serves as Git's credential helper, so `git push` needs no token by hand.
 - `nvim/.config/nvim/lazy-lock.json` is committed on purpose so plugin versions are reproducible on a fresh machine.

@@ -186,6 +186,7 @@ hl.bind(mainMod .. " + Q",            hl.dsp.window.close())
 hl.bind(mainMod .. " + E",            hl.dsp.exec_cmd(fileManager))
 hl.bind(mainMod .. " + B",            hl.dsp.exec_cmd(browser))
 hl.bind(mainMod .. " + W",            hl.dsp.window.float({ action = "toggle" }))
+hl.bind(mainMod .. " + F",            hl.dsp.window.fullscreen({ action = "toggle" }))
 hl.bind(mainMod .. " + A",            hl.dsp.exec_cmd(menu))
 hl.bind(mainMod .. " + V",            hl.dsp.exec_cmd('cliphist list | fuzzel --dmenu --prompt "clipboard: " | cliphist decode | wl-copy'))
 hl.bind(mainMod .. " + P",            hl.dsp.window.pseudo()) -- dwindle
