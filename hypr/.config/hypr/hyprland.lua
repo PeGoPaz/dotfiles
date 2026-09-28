@@ -6,7 +6,7 @@
 -- Scale 1.6 keeps the logical size whole: 2560/1.6 = 1600, 1600/1.6 = 1000.
 -- UNVERIFIED: confirm the mode is accepted with `hyprctl monitors`.
 hl.monitor({
-    output = "eDP-1",
+    output = "eDP-2",
     mode = "2560x1600@165",
     position = "auto",
     scale = "1.6",

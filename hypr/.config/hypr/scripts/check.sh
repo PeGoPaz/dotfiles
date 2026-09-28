@@ -34,13 +34,13 @@ fi
 # --- monitor -----------------------------------------------------------------
 section "monitor"
 if need jq; then
-    read -r w h rr sc <<<"$(hyprctl monitors -j | jq -r '.[] | select(.name=="eDP-1")
+    read -r w h rr sc <<<"$(hyprctl monitors -j | jq -r '.[] | select(.name=="eDP-2")
         | "\(.width) \(.height) \(.refreshRate) \(.scale)"')"
     if [ -z "$w" ]; then
-        fail "eDP-1 not found in hyprctl monitors"
+        fail "eDP-2 not found in hyprctl monitors"
     else
         [ "$w" = "2560" ] && [ "$h" = "1600" ] \
-            && pass "eDP-1 is ${w}x${h}" || fail "eDP-1 is ${w}x${h}, expected 2560x1600"
+            && pass "eDP-2 is ${w}x${h}" || fail "eDP-2 is ${w}x${h}, expected 2560x1600"
         printf '%s' "$rr" | grep -qE '^16[45]' \
             && pass "refresh ${rr}Hz" || fail "refresh ${rr}Hz, expected ~165"
         printf '%s' "$sc" | grep -qE '^1\.6' \
@@ -82,8 +82,8 @@ opt "input:kb_layout"                     us,ru
 # "listloaded" is gone. listactive prints one "<monitor>: <path>" per monitor.
 section "wallpaper"
 active=$(hyprctl hyprpaper listactive 2>&1)
-if printf '%s\n' "$active" | grep -q '^eDP-1: '; then
-    pass "$(printf '%s\n' "$active" | grep '^eDP-1: ')"
+if printf '%s\n' "$active" | grep -q '^eDP-2: '; then
+    pass "$(printf '%s\n' "$active" | grep '^eDP-2: ')"
 elif [ -z "$active" ]; then
     fail "hyprpaper runs but shows no wallpaper - check the path in hyprpaper.conf"
 else

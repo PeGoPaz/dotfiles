@@ -5,7 +5,7 @@ Monochrome Hyprland setup for an ASUS TUF A14 (FA401GM) running CachyOS.
 Off-black greyscale with a single purple accent.
 
 Hardware this is written for: Ryzen AI 9 465 with its Radeon iGPU plus NVIDIA
-RTX 5060 (dGPU), a single internal panel `eDP-1` at 2560x1600@165, Limine as the bootloader. 
+RTX 5060 (dGPU), a single internal panel `eDP-2` at 2560x1600@165, Limine as the bootloader. 
 
 ## Credits
 
@@ -93,7 +93,7 @@ What that checking cannot settle is anything that depends on the machine. These 
 
 | Assumption | How to check | If it is wrong |
 |---|---|---|
-| `2560x1600@165` is accepted on `eDP-1` | `hyprctl monitors` | Edit the monitor block |
+| `2560x1600@165` is accepted on `eDP-2` | `hyprctl monitors` | Edit the monitor block |
 | Keyboard backlight device `asus::kbd_backlight` | `brightnessctl -l` | One line in `hypridle.conf` |
 | Output shape of `asusctl profile get` | Run it by hand | Waybar profile module shows empty |
 | `immediate` tears cleanly on NVIDIA | Launch something from Steam | Drop the `immediate` rule |
