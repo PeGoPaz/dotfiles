@@ -249,6 +249,25 @@ hl.bind("XF86AudioMicMute",           hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_A
 hl.bind("XF86MonBrightnessUp",        hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%+"),                   { locked = true, repeating = true })
 hl.bind("XF86MonBrightnessDown",      hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%-"),                   { locked = true, repeating = true })
 
+-- Touchpad toggle: F10 (XF86TouchpadToggle), SUPER+SHIFT+T as a fallback.
+-- hl.device is the runtime replacement for `hyprctl keyword device[...]`.
+-- Hyprland cannot report a device's enabled state back, so it is tracked here.
+-- The device is declared on every load because a reload drops hl.device
+-- overrides, and setPointerConfigs skips a device with no config at all, which
+-- would leave a disabled touchpad off while touchpadEnabled resets to true.
+local touchpad = "ascf1206:00-2808:0250-touchpad"
+local touchpadEnabled = true
+hl.device({ name = touchpad, enabled = true })
+
+local function toggleTouchpad()
+    touchpadEnabled = not touchpadEnabled
+    hl.device({ name = touchpad, enabled = touchpadEnabled })
+    hl.exec_cmd(touchpadEnabled and 'notify-send "touchpad on"' or 'notify-send "touchpad off"')
+end
+
+hl.bind("XF86TouchpadToggle",         toggleTouchpad)
+hl.bind(mainMod .. " + SHIFT + T",    toggleTouchpad)
+
 -- Screenshot (Print Screen)
 hl.bind("Print",                      hl.dsp.exec_cmd("~/.config/hypr/scripts/screenshot.sh"))
 hl.bind(mainMod .. " + SHIFT + P",    hl.dsp.exec_cmd("~/.config/hypr/scripts/screenshot.sh"))

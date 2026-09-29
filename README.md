@@ -316,6 +316,8 @@ Every cmdline should carry `acpi_backlight=native` and none `splash`. The file w
 | `SUPER + Backspace` | power menu - lock, logout, suspend, reboot, shutdown |
 | `Print` | screenshot - asks region or full screen, saves it to `~/Pictures/screenshots` and copies it too |
 | `SUPER + Shift + P` | the same screenshot - the A14 has no `Print` key |
+| `F10` | touchpad on or off, with a notification - the key with the touchpad icon, pressed without `Fn` |
+| `SUPER + Shift + T` | the same touchpad toggle |
 | `SUPER + Shift + W` | restart Waybar - `systemctl --user restart waybar` |
 
 **Windows**
