@@ -12,6 +12,7 @@
     "modules-right": [
         "mpris",
         "group/stats",
+        "custom/asus",
         "wireplumber",
         "network",
         "bluetooth",
@@ -54,14 +55,14 @@
     "group/stats": {
         "orientation": "horizontal",
         "modules": [
-            "cpu",
             "temperature",
+            "cpu",
             "memory"
         ]
     },
     "cpu": {
         "interval": 5,
-        "format": "󰻠 {usage}%",
+        "format": "{usage}%",
         "tooltip": false
     },
     "temperature": {
@@ -74,8 +75,16 @@
     },
     "memory": {
         "interval": 10,
-        "format": "{percentage}%",
+        "format": "{used:0.1f}G",
         "tooltip-format": "RAM {used:0.1f} / {total:0.1f} GiB"
+    },
+    "custom/asus": {
+        "exec": "~/.config/waybar/scripts/asus.sh",
+        "return-type": "json",
+        "interval": 30,
+        "signal": 8,
+        "on-click": "~/.config/waybar/scripts/asus.sh profile",
+        "on-click-right": "~/.config/waybar/scripts/asus.sh limit"
     },
     "bluetooth": {
         "format": "",
@@ -85,7 +94,7 @@
         "format-no-controller": "",
         "format-connected": "󰂱",
         "tooltip-format-connected": "{device_enumerate}",
-        "on-click": "uwsm app -- ghostty -e bluetoothctl"
+        "on-click": "ghostty -e bluetoothctl"
     },
     "wireplumber": {
         "format": "{icon}",
@@ -96,7 +105,7 @@
             "󰕾"
         ],
         "scroll-step": 5,
-        "on-click": "uwsm app -- pavucontrol",
+        "on-click": "pavucontrol",
         "on-scroll-up": "wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+",
         "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
     },
@@ -105,7 +114,7 @@
         "format-ethernet": "󰈀",
         "format-disconnected": "󰤮",
         "tooltip-format": "{essid} ({signalStrength}%)",
-        "on-click": "uwsm app -- ghostty -e nmtui"
+        "on-click": "ghostty -e nmtui"
     },
     "battery": {
         "states": {

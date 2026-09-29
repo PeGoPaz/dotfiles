@@ -86,21 +86,28 @@ window#waybar #hyprland-workspaces button.visible label {
     color: #6e6e6e;
 }
 
-/* Load: one icon, three numbers, muted - cpu%, temp, ram% */
-#cpu,
+/* Load: three bare numbers, muted - cpu temp, cpu load, ram used */
 #temperature,
+#cpu,
 #memory {
-    padding: 0 0 0 6px;
+    padding: 0 0 0 8px;
     background-color: transparent;
     color: #6e6e6e;
 }
 
-#cpu {
+#temperature {
     padding-left: 10px;
 }
 
 #memory {
     padding-right: 10px;
+}
+
+/* Power profile gauge; bolt appears while charging to 100% */
+#custom-asus {
+    padding: 0 10px;
+    background-color: transparent;
+    color: #6e6e6e;
 }
 
 #wireplumber {
