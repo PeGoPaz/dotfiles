@@ -320,6 +320,17 @@ hl.window_rule({
     float = true,
 })
 
+-- Dolphin at 0.9, like Ghostty's background-opacity. The class is from
+-- `hyprctl clients`. opacity is a string, "active inactive"; parseOpacityRule
+-- in WindowRule.cpp reads it, and a fullscreen Dolphin stays opaque.
+hl.window_rule({
+    name = "dolphin-opacity",
+    match = {
+        class = "^org\\.kde\\.dolphin$",
+    },
+    opacity = "0.9 0.9",
+})
+
 --#################
 --## AUTOSTART ####
 --#################
