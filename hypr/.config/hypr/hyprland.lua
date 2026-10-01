@@ -191,7 +191,8 @@ hl.bind(mainMod .. " + A",            hl.dsp.exec_cmd(menu))
 hl.bind(mainMod .. " + V",            hl.dsp.exec_cmd('cliphist list | fuzzel --dmenu --prompt "clipboard: " | cliphist decode | wl-copy'))
 hl.bind(mainMod .. " + P",            hl.dsp.window.pseudo()) -- dwindle
 -- Not bound, but available if you want it: hl.dsp.layout("togglesplit")
-hl.bind(mainMod .. " + L",            hl.dsp.exec_cmd("hyprlock"))
+-- Locks go through hypridle's lock_cmd, which switches to us before hyprlock.
+hl.bind(mainMod .. " + L",            hl.dsp.exec_cmd("loginctl lock-session"))
 
 -- Restart Waybar with Super + Shift + W
 hl.bind(mainMod .. " + SHIFT + W",    hl.dsp.exec_cmd("systemctl --user restart waybar"))

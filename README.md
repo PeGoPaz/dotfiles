@@ -312,7 +312,7 @@ Every cmdline should carry `acpi_backlight=native` and none `splash`. The file w
 | `SUPER + B` | Firefox |
 | `SUPER + A` | fuzzel launcher |
 | `SUPER + V` | clipboard history through fuzzel |
-| `SUPER + L` | lock |
+| `SUPER + L` | lock - switches the keyboard to `us` first |
 | `SUPER + Backspace` | power menu - lock, logout, suspend, reboot, shutdown |
 | `Print` | screenshot - asks region or full screen, saves it to `~/Pictures/screenshots` and copies it too |
 | `SUPER + Shift + P` | the same screenshot - the A14 has no `Print` key |
@@ -370,6 +370,7 @@ The lid is handled by systemd-logind, not by a Hyprland bind: logind suspends on
 - Waybar's click actions start their programs through `uwsm app --`, so pavucontrol and the `nmtui` and `bluetoothctl` terminals run as units of their own. Started directly they would sit inside the Waybar unit, and restarting the bar - by hand or after a crash - would close them with it.
 - Ghostty is slightly translucent, `background-opacity = 0.9`. Dolphin matches it with the `dolphin-opacity` window rule in `hyprland.lua`, 0.9 whether focused or not and opaque in fullscreen. The rule fades the whole window, file names and icons included, where Ghostty fades only its background.
 - The login is greetd autologin. In `/etc/greetd/config.toml`, `initial_session` runs `uwsm start -e -D Hyprland hyprland.desktop` as `vladr`, and `default_session` is `agreety --cmd start-hyprland`. noctalia-greeter was removed.
+- Every lock goes through one path. `SUPER + L`, the power menu, the 6-minute idle timer and `before_sleep_cmd` (lid close included) all run `loginctl lock-session`, and hypridle answers it with its `lock_cmd`: `hyprctl switchxkblayout all 0`, then hyprlock. The password field therefore always starts in `us`, even if the session was in `ru`. `switchxkblayout` is its own hyprctl command and still works with the Lua config, unlike `hyprctl keyword`. The lock screen shows the current layout under the password field, and `Alt+Space` still switches it there. Because `SUPER + L` only asks hypridle to lock, it does nothing if hypridle is not running.
 - The default shell is fish. `EDITOR` and `VISUAL` are universal variables, set once with `set -Ux EDITOR nvim` and `set -Ux VISUAL nvim`, and bash loops in this README are wrapped in `bash -c`.
 - fish's `config.fish` is the `fish` package. It sources CachyOS's `/usr/share/cachyos-fish-config/cachyos-config.fish`, whose `fish_greeting` runs fastfetch in every new terminal, and then replaces that greeting with an empty one. `fish_variables` - where the universal variables live - is machine state that fish rewrites, so it is gitignored and never stowed.
 - Pushing goes through github-cli: run `gh auth login`, choose HTTPS, and answer yes to authenticating Git with your GitHub credentials. gh then serves as Git's credential helper, so `git push` needs no token by hand.
